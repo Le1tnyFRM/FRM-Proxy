@@ -33,7 +33,7 @@ Forked from ViaProxy and rebranded with a darker UI, fixed theme switching, upda
 - Three themes: Dark / Light / Ocean
 
 ## Download
-Latest stable: **https://github.com/Le1tnyFRM/FRM-Proxy/releases** — just download `FRM-Proxy-1.0.5.jar` (or `+java8` for Java 8) and run with `java -jar FRM-Proxy-1.0.5.jar`
+Latest stable: **https://github.com/Le1tnyFRM/FRM-Proxy/releases** — just download `FRM-Proxy-1.0.5.jar` (or `+java8` for Java 8) and double click or run with `java -jar FRM-Proxy-1.0.5.jar`
 
 ## Quick Start (GUI)
 1. Download jar from releases
@@ -43,7 +43,7 @@ Latest stable: **https://github.com/Le1tnyFRM/FRM-Proxy/releases** — just down
 5. Click Start — connect with your client to `127.0.0.1:25568`
 
 ## Credits
-Main dev: **Le1tny**, Helped: **aagaming22**. Based on ViaProxy by RK_01/RaphiMC & Lenni0451 (GPL-3.0).
+Main dev: **Le1tny**, Helped: **aagaming22**. Based on ViaProxy by RK_01/RaphiMC & Lenni0451.
 
 ## Contact / Issues
 Open an issue at https://github.com/Le1tnyFRM/FRM-Proxy/issues or join https://discord.gg/JDnqyqWm43
