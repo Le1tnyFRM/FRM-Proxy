@@ -8,7 +8,7 @@ FRM Proxy lets you join **any** Minecraft server version from your favourite cli
 **Discord:** https://discord.gg/JDnqyqWm43 — **Releases:** https://github.com/Le1tnyFRM/FRM-Proxy/releases
 
 ## What is FRM Proxy?
-FRM Proxy is a standalone proxy that translates between Minecraft protocol versions (Classic → Latest + Bedrock). Run the jar, set server address + version, hit **Start** and join on `127.0.0.1:25568`.
+FRM Proxy is a standalone proxy that translates between Minecraft protocol versions (Classic → Latest + Bedrock). Run the jar, set server address + version, hit **Start** and join on `127.0.0.1:25568` (port may be different).
 
 Forked from ViaProxy and rebranded with a darker UI, fixed theme switching, updated update-check and FRM branding.
 
