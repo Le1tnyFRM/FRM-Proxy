@@ -50,10 +50,10 @@ public class UpdateCheckTask implements Runnable {
     public void run() {
         if (VERSION.startsWith("$")) return; // Dev env check
         try {
-            URL url = new URL("https://api.github.com/repos/RaphiMC/ViaProxy/releases/latest");
+            URL url = new URL("https://api.github.com/repos/Le1tnyFRM/FRM-Proxy/releases/latest");
             HttpURLConnection con = (HttpURLConnection) url.openConnection();
             con.setRequestMethod("GET");
-            con.setRequestProperty("User-Agent", "ViaProxy/" + VERSION);
+            con.setRequestProperty("User-Agent", "FRM-Proxy/" + VERSION);
             con.setConnectTimeout(5000);
             con.setReadTimeout(5000);
 
@@ -76,20 +76,20 @@ public class UpdateCheckTask implements Runnable {
                 updateAvailable = !VERSION.equals(latestVersion);
             }
             if (updateAvailable) {
-                Logger.LOGGER.warn("You are running an outdated version of ViaProxy! Latest version: " + latestVersion);
-                if (this.hasUI && JarUtil.getJarFile().isPresent()) {
-                    final boolean runsJava8 = System.getProperty("java.version").startsWith("1.8");
-                    JsonArray assets = object.getAsJsonArray("assets");
-                    boolean found = false;
-                    for (JsonElement asset : assets) {
-                        JsonObject assetObject = asset.getAsJsonObject();
-                        if ((this.isMainViaProxyJar(object, assetObject) && !runsJava8) || this.isJava8ViaProxyJar(object, assetObject) && runsJava8) {
-                            found = true;
-                            SwingUtilities.invokeLater(() -> this.showUpdateQuestion(assetObject.get("name").getAsString(), assetObject.get("browser_download_url").getAsString(), latestVersion));
-                            break;
+                Logger.LOGGER.warn("You are running an outdated version of FRM Proxy! Latest version: " + latestVersion);
+                if (this.hasUI) {
+                    SwingUtilities.invokeLater(() -> {
+                        int chosen = JOptionPane.showConfirmDialog(
+                            ViaProxy.getForegroundWindow(),
+                            "You are running an outdated version of FRM Proxy! Current: " + VERSION + ", Latest: " + latestVersion + "\n\nDo you want to download the new version?",
+                            "FRM Proxy Update",
+                            JOptionPane.YES_NO_OPTION,
+                            JOptionPane.WARNING_MESSAGE
+                        );
+                        if (chosen == JOptionPane.YES_OPTION) {
+                            ViaProxyWindow.openURL("https://github.com/Le1tnyFRM/FRM-Proxy/releases/new");
                         }
-                    }
-                    if (!found) SwingUtilities.invokeLater(() -> this.showUpdateWarning(latestVersion));
+                    });
                 }
             }
         } catch (Throwable ignored) {

@@ -71,22 +71,10 @@ public class ViaProxyWindow extends JFrame {
     private void setLookAndFeel() {
         try {
             FlatDarkLaf.setup();
-
-            UIManager.put("Panel.background", new Color(30, 30, 30));
-            UIManager.put("TabbedPane.contentAreaColor", new Color(30, 30, 30));
-            UIManager.getLookAndFeelDefaults().put("TextComponent.arc", 5);
-            UIManager.getLookAndFeelDefaults().put("Button.arc", 5);
         } catch (Throwable t) {
             t.printStackTrace();
         }
     }
-
-    public static void showNotification(final String message, final int type) {
-        JOptionPane.showMessageDialog(ViaProxy.getForegroundWindow(), message, "FRM Proxy", type);
-    }
-
-}
-
 
     private void initWindow() {
         this.setTitle("FRM Proxy v" + ViaProxy.VERSION);
@@ -155,7 +143,7 @@ public class ViaProxyWindow extends JFrame {
     }
 
     public static void showNotification(final String message, final int type) {
-        JOptionPane.showMessageDialog(ViaProxy.getForegroundWindow(), message, "ViaProxy", type);
+        JOptionPane.showMessageDialog(ViaProxy.getForegroundWindow(), message, "FRM Proxy", type);
     }
 
 }

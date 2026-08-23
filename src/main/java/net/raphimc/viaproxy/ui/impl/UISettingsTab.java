@@ -18,17 +18,15 @@
 package net.raphimc.viaproxy.ui.impl;
 
 import net.lenni0451.commons.swing.GBC;
-import net.raphimc.viaproxy.ui.I18n;
 import net.raphimc.viaproxy.ui.UITab;
 import net.raphimc.viaproxy.ui.ViaProxyWindow;
-import net.raphimc.viaproxy.ui.elements.LinkLabel;
-import net.raphimc.viaproxy.util.JarUtil;
-import net.raphimc.viaproxy.util.logging.Logger;
+import com.formdev.flatlaf.FlatDarkLaf;
+import com.formdev.flatlaf.FlatLightLaf;
+import com.formdev.flatlaf.FlatLaf;
 
 import javax.swing.*;
 import java.awt.*;
 
-import static net.raphimc.viaproxy.ui.ViaProxyWindow.BODY_BLOCK_PADDING;
 import static net.raphimc.viaproxy.ui.ViaProxyWindow.BORDER_PADDING;
 
 public class UISettingsTab extends UITab {
@@ -43,42 +41,55 @@ public class UISettingsTab extends UITab {
         body.setLayout(new GridBagLayout());
 
         int gridy = 0;
+        // Theme Selection
         {
-            JLabel languageLabel = new JLabel(I18n.get("tab.ui_settings.language.label"));
-            GBC.create(body).grid(0, gridy++).insets(BORDER_PADDING, BORDER_PADDING, 0, BORDER_PADDING).anchor(GBC.NORTHWEST).add(languageLabel);
+            JLabel themeLabel = new JLabel("Theme");
+            GBC.create(body).grid(0, gridy++).insets(BORDER_PADDING, BORDER_PADDING, 0, BORDER_PADDING).anchor(GBC.NORTHWEST).add(themeLabel);
 
-            JComboBox<String> language = new JComboBox<>(I18n.getAvailableLocales().toArray(new String[0]));
-            language.setRenderer(new DefaultListCellRenderer() {
-                @Override
-                public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
-                    if (value instanceof String locale) {
-                        value = "<html><b>" + I18n.getSpecific(locale, "language.name") + "</b> (" + I18n.get("tab.ui_settings.language.completion", I18n.getSpecific(locale, "language.completion")) + ")</html>";
-                    }
-                    return super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
-                }
-            });
-            language.setSelectedItem(I18n.getCurrentLocale());
-            language.addActionListener(event -> {
-                if (!(language.getSelectedItem() instanceof String locale)) return;
-                if (locale.equals(I18n.getCurrentLocale())) return;
-                I18n.setLocale(locale);
-                ViaProxyWindow.showInfo(I18n.get("tab.ui_settings.language.success", I18n.get("language.name"), locale));
+            String[] themes = {"Dark", "Light", "Ocean"};
+            JComboBox<String> themeBox = new JComboBox<>(themes);
+            themeBox.addActionListener(e -> {
+                String selected = (String) themeBox.getSelectedItem();
                 try {
-                    JarUtil.launch(JarUtil.getJarFile().orElseThrow());
-                    System.exit(0);
-                } catch (Throwable e) {
-                    Logger.LOGGER.error("Could not start the ViaProxy jar", e);
-                    ViaProxyWindow.showException(e);
-                    System.exit(1);
+                    // Reset custom defaults from UIManager completely first
+                    UIManager.put("Panel.background", null);
+                    UIManager.put("TabbedPane.contentAreaColor", null);
+                    UIManager.put("Button.background", null);
+                    UIManager.put("TextField.background", null);
+
+                    if ("Dark".equals(selected)) {
+                        UIManager.setLookAndFeel(new FlatDarkLaf());
+                    } else if ("Light".equals(selected)) {
+                        UIManager.setLookAndFeel(new FlatLightLaf());
+                    } else if ("Ocean".equals(selected)) {
+                        UIManager.setLookAndFeel(new FlatDarkLaf());
+                        UIManager.put("Panel.background", new Color(0, 105, 148));
+                        UIManager.put("TabbedPane.contentAreaColor", new Color(0, 80, 120));
+                        UIManager.put("Button.background", new Color(0, 130, 180));
+                        UIManager.put("TextField.background", new Color(0, 70, 100));
+                    }
+                    
+                    // Force complete Look and Feel hierarchy updates correctly
+                    SwingUtilities.updateComponentTreeUI(this.viaProxyWindow);
+                } catch (Exception ex) {
+                    ex.printStackTrace();
                 }
             });
-            GBC.create(body).grid(0, gridy++).weightx(1).insets(0, BORDER_PADDING, 0, BORDER_PADDING).fill(GBC.HORIZONTAL).add(language);
+
+            GBC.create(body).grid(0, gridy++).weightx(1).insets(0, BORDER_PADDING, 0, BORDER_PADDING).fill(GBC.HORIZONTAL).add(themeBox);
         }
-        GBC.create(body).grid(0, gridy++).weightx(1).insets(BODY_BLOCK_PADDING, BORDER_PADDING, 0, BORDER_PADDING).fill(GBC.HORIZONTAL).add(new JLabel("<html>" + I18n.get("tab.ui_settings.crowdin.info") + "</html>"));
-        GBC.create(body).grid(0, gridy++).weightx(1).insets(0, BORDER_PADDING, 0, BORDER_PADDING).fill(GBC.HORIZONTAL).add(new LinkLabel(I18n.get("tab.ui_settings.crowdin.link"), "https://crowdin.com/project/viaproxy"));
+
+        // Additional setting: ToolTip Delay
+        {
+            JLabel tooltipLabel = new JLabel("ToolTip Delay (ms)");
+            GBC.create(body).grid(0, gridy++).insets(BORDER_PADDING, BORDER_PADDING, 0, BORDER_PADDING).anchor(GBC.NORTHWEST).add(tooltipLabel);
+            
+            JSlider delaySlider = new JSlider(0, 2000, ToolTipManager.sharedInstance().getInitialDelay());
+            delaySlider.addChangeListener(e -> ToolTipManager.sharedInstance().setInitialDelay(delaySlider.getValue()));
+            GBC.create(body).grid(0, gridy++).weightx(1).insets(0, BORDER_PADDING, 0, BORDER_PADDING).fill(GBC.HORIZONTAL).add(delaySlider);
+        }
 
         contentPane.setLayout(new BorderLayout());
         contentPane.add(body, BorderLayout.NORTH);
     }
-
 }

@@ -76,14 +76,14 @@ public class GeneralTab extends UITab {
         JPanel header = new JPanel();
         header.setLayout(new GridBagLayout());
 
-        LinkLabel discord = new LinkLabel("Discord", "https://discord.gg/viaversion");
+        LinkLabel discord = new LinkLabel("Discord", "https://discord.gg/JDnqyqWm43");
         GBC.create(header).grid(0, 0).width(0).insets(BORDER_PADDING, BORDER_PADDING, 0, 0).anchor(GBC.NORTHWEST).add(discord);
 
-        JLabel title = new JLabel("ViaProxy");
+        JLabel title = new JLabel("FRM Proxy");
         title.setFont(title.getFont().deriveFont(30F));
         GBC.create(header).grid(1, 0).weightx(1).width(0).insets(BORDER_PADDING, 0, 0, 0).anchor(GBC.CENTER).add(title);
 
-        JLabel copyright = new JLabel("© RK_01 & Lenni0451");
+        JLabel copyright = new JLabel("Main dev: Le1tny | Helped: aagaming22");
         GBC.create(header).grid(2, 0).width(0).insets(BORDER_PADDING, 0, 0, BORDER_PADDING).anchor(GBC.NORTHEAST).add(copyright);
 
         parent.add(header, BorderLayout.NORTH);
