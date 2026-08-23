@@ -1,102 +1,49 @@
-# FRM Proxy
-Standalone proxy which allows players to join EVERY Minecraft server version (Classic, Alpha, Beta, Release, Bedrock)
+# FRM Proxy v1.0.5
+> **The modern, improved Minecraft version bridge — based on ViaProxy.**
 
-To download the latest version, go to the [Releases section](#executable-jar-file) and download the latest version.  
-Using it is very simple, just run the jar file, and it will start a user interface where everything can be configured.  
-For a full user guide go to the [Usage for Players](#usage-for-players-gui) section or the [Usage for Server Owners](#usage-for-server-owners-config) section.
+FRM Proxy lets you join **any** Minecraft server version from your favourite client version. Clean UI, Ocean/Dark/Light themes, and simple setup.
 
-## Supported Server versions
-- Release (1.0.0 - 26.2)
-- Beta (b1.0 - b1.8.1)
-- Alpha (a1.0.15 - a1.2.6)
-- Classic (c0.0.15 - c0.30 including [CPE](https://wiki.vg/Classic_Protocol_Extension))
-- April Fools (3D Shareware, 20w14infinite, 25w14craftmine)
-- Combat Snapshots (Combat Test 8c)
-- Bedrock Edition 1.26.30 (WIP, [Many features are missing](https://github.com/RaphiMC/ViaBedrock#features))
+**Main dev:** Le1tny — **Helped:** aagaming22
 
-## Supported Client versions
-- Release (1.7.2 - 26.2)
-- April Fools (3D Shareware, 25w14craftmine)
-- Bedrock Edition (Requires the [Geyser plugin](https://geysermc.org/download))
-- Beta 1.7.3 (Requires the [Beta2Release plugin](https://github.com/ViaVersionAddons/FRM ProxyBeta2Release))
-- Classic, Alpha, Beta, Release 1.0 - 1.6.4 (Only passthrough)
+**Discord:** https://discord.gg/JDnqyqWm43 — **Releases:** https://github.com/Le1tnyFRM/FRM-Proxy/releases
 
-FRM Proxy supports joining to any of the listed server version from any of the listed client versions.
+## What is FRM Proxy?
+FRM Proxy is a standalone proxy that translates between Minecraft protocol versions (Classic → Latest + Bedrock). Run the jar, set server address + version, hit **Start** and join on `127.0.0.1:25568`.
 
-## Special Features
-- Support for joining online mode servers
-- Support for joining on servers which have chat signing enabled from all listed client versions
-- Supports transfer and cookies for <=1.20.4 clients on 1.20.5+ servers
-- Allows joining Minecraft Realms with any supported client version
-- Supports Simple Voice Chat mod
+Forked from ViaProxy and rebranded with a darker UI, fixed theme switching, updated update-check and FRM branding.
 
-## Releases
-### Executable Jar File
-If you want the executable jar file you can download a stable release from [GitHub Releases](https://github.com/ViaVersion/FRM Proxy/releases/latest) or the latest dev version from [GitHub Actions](https://github.com/RaphiMC/FRM Proxy/actions/workflows/build.yml) or the [ViaVersion Jenkins](https://ci.viaversion.com/view/Platforms/job/FRM Proxy/).
+## Supported Server Versions
+- Release 1.0.0 - 26.2
+- Beta b1.0 - b1.8.1
+- Alpha a1.0.15 - a1.2.6
+- Classic c0.0.15 - c0.30 (CPE)
+- April Fools / Combat Snapshots
+- Bedrock 1.26.30 (WIP)
 
-### Docker Image
-FRM Proxy docker images can be found on [GitHub Packages](https://github.com/ViaVersion/FRM Proxy/pkgs/container/viaproxy).
+## Supported Client Versions
+- Release 1.7.2 - 26.2
+- Bedrock via Geyser
+- April Fools / Beta 1.7.3 via plugins
 
-To run the latest version of FRM Proxy you can use the following command:
-```bash
-docker run -it -v /path/to/run:/app/run -p 25568:25568 ghcr.io/viaversion/viaproxy:latest
-```
-where ``/path/to/run`` is the path where the FRM Proxy data should be stored and ``25568`` is the port FRM Proxy should listen on.
+## Features
+- Join online-mode servers with Microsoft/offline accounts
+- Chat signing handling
+- Transfer & cookies support
+- Simple Voice Chat support
+- Three themes: Dark / Light / Ocean
 
-## Usage for Players (GUI)
-![FRM Proxy GUI](https://i.imgur.com/RaDWkbK.png)
-1. Download the latest version from the [Releases section](#executable-jar-file)
-2. Put the jar file into a folder (FRM Proxy will generate config files and store some data there)
-3. Run the jar file
-4. Fill in the required fields like server address and version
-5. If you want to join online mode servers, add your Minecraft account in the Accounts tab
-6. Click on "Start"
-7. Join with your Minecraft client on the displayed address
-8. Have fun!
+## Download
+Latest stable: **https://github.com/Le1tnyFRM/FRM-Proxy/releases** — just download `FRM-Proxy-1.0.5.jar` (or `+java8` for Java 8) and run with `java -jar FRM-Proxy-1.0.5.jar`
 
-## Usage for Server owners (Config)
-1. Download the latest version from the [Releases section](#executable-jar-file)
-2. Put the jar file into a folder (FRM Proxy will generate config files and store some data there)
-3. Run the jar file (Using ``java -jar FRM Proxy-whateverversion.jar config viaproxy.yml``)
-4. FRM Proxy now generates a config file called ``viaproxy.yml`` in the same folder and exits
-5. Open the config file and configure the proxy (Most important options are at the top)
-6. Start the proxy using the start command and test whether it works (Join using the server's public address and the bind port you configured)
-7. Have fun!
+## Quick Start (GUI)
+1. Download jar from releases
+2. Put in empty folder
+3. Run jar — UI opens
+4. Enter Server Address + Version, choose account
+5. Click Start — connect with your client to `127.0.0.1:25568`
 
-## Usage for Server owners (CLI)
-1. Download the latest version from the [Releases section](#executable-jar-file)
-2. Put the jar file into a folder (FRM Proxy will generate config files and store some data there)
-3. Run the jar file (Using ``java -jar FRM Proxy-whateverversion.jar cli --help``)
-4. FRM Proxy will print the CLI usage and exit
-5. Configure the proxy and optionally put the finished start command into a script
-6. Start the proxy using the start command and test whether it works (Join using the server's public address and the bind port you configured)
-7. Have fun!
+## Credits
+Main dev: **Le1tny**, Helped: **aagaming22**. Based on ViaProxy by RK_01/RaphiMC & Lenni0451 (GPL-3.0).
 
-### Configuring the protocol translation
-To change FRM Proxy settings you can check out the ``viaproxy.yml`` config file. Most of the settings are configurable via the GUI.  
-To change the protocol translation settings/features you can look into the ``ViaLoader`` folder.
-You will find 5 config files there:
-- viaversion.yml (ViaVersion)
-- viabackwards.yml (ViaBackwards)
-- viarewind.yml (ViaRewind)
-- vialegacy.yml (ViaLegacy)
-- viabedrock.yml (ViaBedrock)
-
-### Developer Plugin API
-FRM Proxy has a plugin API which allows you to extend and modify the behavior of FRM Proxy.  
-Documentation for the plugin API can be found [here](https://github.com/ViaVersion/FRM Proxy/wiki/Creating-plugins).  
-A list of plugins can be found [here](https://github.com/ViaVersion/FRM Proxy/wiki/Plugins).
-
-## Contributing
-Contributions in the form of pull requests are always welcome.
-Please make sure to keep your code style consistent with the rest of the project and that your code is easily maintainable.
-If you plan to make a large scale changes, please open an issue first or join my discord to discuss it.
-
-### Translations
-If you want to help translating FRM Proxy you can do so on [Crowdin](https://crowdin.com/project/viaproxy).
-
-## Contact
-If you encounter any issues, please report them on the
-[issue tracker](https://github.com/ViaVersion/FRM Proxy/issues).  
-If you just want to talk or need help using FRM Proxy feel free to join the ViaVersion
-[Discord](https://discord.gg/viaversion).
+## Contact / Issues
+Open an issue at https://github.com/Le1tnyFRM/FRM-Proxy/issues or join https://discord.gg/JDnqyqWm43
