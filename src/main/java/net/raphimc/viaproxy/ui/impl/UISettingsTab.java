@@ -27,38 +27,33 @@ public class UISettingsTab extends UITab {
     }
     public static void applyTheme(ViaProxyWindow win, String t){
         try{
-            Color bg=null, tabBg=null, accent=null;
-            boolean isLight="Light".equals(t);
-            // reset any prior UIManager overrides
             for(String k:new String[]{"Panel.background","TabbedPane.background","TabbedPane.contentAreaColor","Component.accentColor"}){ UIManager.put(k,null); try{UIManager.getDefaults().remove(k);}catch(Exception ignored){} }
-            if(isLight) FlatLightLaf.setup();
-            else if("Ocean".equals(t)){ FlatDarkLaf.setup(); bg=new Color(0,105,148); tabBg=new Color(0,80,120); accent=new Color(0,180,220); }
-            else if("Midnight".equals(t)){ FlatDarkLaf.setup(); bg=new Color(18,18,30); tabBg=new Color(24,24,44); accent=new Color(120,120,255); }
-            else if("Nord".equals(t)){ FlatDarkLaf.setup(); bg=new Color(46,52,64); tabBg=new Color(59,66,82); accent=new Color(136,192,208); }
-            else if("Crimson".equals(t)){ FlatDarkLaf.setup(); bg=new Color(72,18,22); tabBg=new Color(95,25,30); accent=new Color(220,60,70); }
+            if("Light".equals(t)) FlatLightLaf.setup();
+            else if("Ocean".equals(t)){ FlatDarkLaf.setup(); UIManager.put("Panel.background",new Color(0,105,148)); UIManager.put("TabbedPane.contentAreaColor",new Color(0,80,120)); UIManager.put("TabbedPane.background",new Color(0,80,120)); UIManager.put("Component.accentColor",new Color(0,180,220));}
+            else if("Midnight".equals(t)){ FlatDarkLaf.setup(); UIManager.put("Panel.background",new Color(18,18,30)); UIManager.put("TabbedPane.contentAreaColor",new Color(24,24,44)); UIManager.put("TabbedPane.background",new Color(24,24,44));}
+            else if("Nord".equals(t)){ FlatDarkLaf.setup(); UIManager.put("Panel.background",new Color(46,52,64)); UIManager.put("TabbedPane.contentAreaColor",new Color(59,66,82)); UIManager.put("TabbedPane.background",new Color(59,66,82)); UIManager.put("Component.accentColor",new Color(136,192,208));}
+            else if("Crimson".equals(t)){ FlatDarkLaf.setup(); UIManager.put("Panel.background",new Color(72,18,22)); UIManager.put("TabbedPane.contentAreaColor",new Color(95,25,30)); UIManager.put("TabbedPane.background",new Color(95,25,30)); UIManager.put("Component.accentColor",new Color(220,60,70));}
             else FlatDarkLaf.setup();
-            if(bg!=null){ UIManager.put("Panel.background",bg); UIManager.put("TabbedPane.contentAreaColor",tabBg); UIManager.put("Component.accentColor",accent); UIManager.put("TabbedPane.background",tabBg); }
             FlatLaf.updateUI();
-            if(bg!=null && win!=null) forceColors(win, bg, tabBg, accent);
-            // for Light/Dark ensure no leftover custom paint by forcing revalidate on contentPane
-            if(win!=null){ win.repaint(); win.revalidate(); }
+            Color bg = UIManager.getColor("Panel.background");
+            Color tabBg = UIManager.getColor("TabbedPane.contentAreaColor");
+            if(tabBg==null) tabBg=bg;
+            if(win!=null) forceAll(win, bg, tabBg);
+            for(Window w: Window.getWindows()) forceAll(w, bg, tabBg);
         }catch(Exception ex){ex.printStackTrace();}
     }
-    private static void forceColors(Container root, Color bg, Color tabBg, Color accent){
-        for(Window w: Window.getWindows()) recolor(w, bg, tabBg);
+    private static void forceAll(Container root, Color bg, Color tabBg){
+        if(bg==null) return;
         recolor(root, bg, tabBg);
-        if(accent!=null) UIManager.put("Component.accentColor",accent);
+        root.repaint(); root.revalidate();
     }
     private static void recolor(Container c, Color bg, Color tabBg){
         for(Component comp: c.getComponents()){
             if(comp instanceof JPanel) comp.setBackground(bg);
-            if(comp instanceof JTabbedPane) {
-                comp.setBackground(tabBg);
-                ((JTabbedPane)comp).setOpaque(true);
-            }
-            if(comp instanceof JLabel && !(comp.getParent() instanceof JComboBox)) comp.setForeground(Color.WHITE);
+            if(comp instanceof JTabbedPane){ comp.setBackground(tabBg); ((JTabbedPane)comp).setOpaque(true); }
+            if(comp instanceof JScrollPane){ comp.setBackground(bg); ((JScrollPane)comp).getViewport().setBackground(bg); }
             if(comp instanceof Container) recolor((Container)comp, bg, tabBg);
         }
-        c.setBackground(bg);
+        if(c instanceof JPanel || c instanceof JTabbedPane || c instanceof JFrame || c instanceof JWindow) c.setBackground(bg);
     }
 }
