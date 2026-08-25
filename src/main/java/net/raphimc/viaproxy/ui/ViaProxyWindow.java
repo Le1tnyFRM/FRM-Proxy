@@ -71,6 +71,10 @@ public class ViaProxyWindow extends JFrame {
     private void setLookAndFeel() {
         try {
             FlatDarkLaf.setup();
+            UIManager.put("TextComponent.arc", 12);
+            UIManager.put("Button.arc", 12);
+            UIManager.put("Component.arc", 12);
+            UIManager.put("TabbedPane.showTabSeparators", true);
         } catch (Throwable t) {
             t.printStackTrace();
         }

@@ -1,20 +1,3 @@
-/*
- * This file is part of ViaProxy - https://github.com/RaphiMC/ViaProxy
- * Copyright (C) 2021-2026 RK_01/RaphiMC and contributors
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- */
 package net.raphimc.viaproxy.ui.impl;
 
 import net.lenni0451.commons.swing.GBC;
@@ -22,74 +5,45 @@ import net.raphimc.viaproxy.ui.UITab;
 import net.raphimc.viaproxy.ui.ViaProxyWindow;
 import com.formdev.flatlaf.FlatDarkLaf;
 import com.formdev.flatlaf.FlatLightLaf;
-import com.formdev.flatlaf.FlatLaf;
-
+import com.formdev.flatlaf.themes.FlatMacDarkLaf;
+import com.formdev.flatlaf.themes.FlatMacLightLaf;
 import javax.swing.*;
 import java.awt.*;
-
 import static net.raphimc.viaproxy.ui.ViaProxyWindow.BORDER_PADDING;
 
 public class UISettingsTab extends UITab {
-
-    public UISettingsTab(final ViaProxyWindow frame) {
-        super(frame, "ui_settings");
-    }
-
-    @Override
-    protected void init(JPanel contentPane) {
-        JPanel body = new JPanel();
-        body.setLayout(new GridBagLayout());
-
-        int gridy = 0;
-        // Theme Selection
-        {
-            JLabel themeLabel = new JLabel("Theme");
-            GBC.create(body).grid(0, gridy++).insets(BORDER_PADDING, BORDER_PADDING, 0, BORDER_PADDING).anchor(GBC.NORTHWEST).add(themeLabel);
-
-            String[] themes = {"Dark", "Light", "Ocean"};
-            JComboBox<String> themeBox = new JComboBox<>(themes);
-            themeBox.addActionListener(e -> {
-                String selected = (String) themeBox.getSelectedItem();
-                try {
-                    // Reset custom defaults from UIManager completely first
-                    UIManager.put("Panel.background", null);
-                    UIManager.put("TabbedPane.contentAreaColor", null);
-                    UIManager.put("Button.background", null);
-                    UIManager.put("TextField.background", null);
-
-                    if ("Dark".equals(selected)) {
-                        UIManager.setLookAndFeel(new FlatDarkLaf());
-                    } else if ("Light".equals(selected)) {
-                        UIManager.setLookAndFeel(new FlatLightLaf());
-                    } else if ("Ocean".equals(selected)) {
-                        UIManager.setLookAndFeel(new FlatDarkLaf());
-                        UIManager.put("Panel.background", new Color(0, 105, 148));
-                        UIManager.put("TabbedPane.contentAreaColor", new Color(0, 80, 120));
-                        UIManager.put("Button.background", new Color(0, 130, 180));
-                        UIManager.put("TextField.background", new Color(0, 70, 100));
-                    }
-                    
-                    // Force complete Look and Feel hierarchy updates correctly
-                    SwingUtilities.updateComponentTreeUI(this.viaProxyWindow);
-                } catch (Exception ex) {
-                    ex.printStackTrace();
-                }
-            });
-
-            GBC.create(body).grid(0, gridy++).weightx(1).insets(0, BORDER_PADDING, 0, BORDER_PADDING).fill(GBC.HORIZONTAL).add(themeBox);
-        }
-
-        // Additional setting: ToolTip Delay
-        {
-            JLabel tooltipLabel = new JLabel("ToolTip Delay (ms)");
-            GBC.create(body).grid(0, gridy++).insets(BORDER_PADDING, BORDER_PADDING, 0, BORDER_PADDING).anchor(GBC.NORTHWEST).add(tooltipLabel);
-            
-            JSlider delaySlider = new JSlider(0, 2000, ToolTipManager.sharedInstance().getInitialDelay());
-            delaySlider.addChangeListener(e -> ToolTipManager.sharedInstance().setInitialDelay(delaySlider.getValue()));
-            GBC.create(body).grid(0, gridy++).weightx(1).insets(0, BORDER_PADDING, 0, BORDER_PADDING).fill(GBC.HORIZONTAL).add(delaySlider);
-        }
-
+    public UISettingsTab(final ViaProxyWindow frame) { super(frame, "ui_settings"); }
+    @Override protected void init(JPanel contentPane) {
+        JPanel body = new JPanel(new GridBagLayout());
+        int y=0;
+        GBC.create(body).grid(0,y++).insets(BORDER_PADDING,BORDER_PADDING,0,BORDER_PADDING).anchor(GBC.NORTHWEST).add(new JLabel("Theme"));
+        String[] themes={"Dark","Light","Ocean","Midnight","Nord","Crimson"};
+        JComboBox<String> box=new JComboBox<>(themes);
+        try{box.setSelectedItem(UIManager.getLookAndFeel().getName());}catch(Exception ignored){}
+        box.addActionListener(e->applyTheme((String)box.getSelectedItem()));
+        GBC.create(body).grid(0,y++).weightx(1).insets(0,BORDER_PADDING,0,BORDER_PADDING).fill(GBC.HORIZONTAL).add(box);
+        GBC.create(body).grid(0,y++).insets(BORDER_PADDING,BORDER_PADDING,0,BORDER_PADDING).anchor(GBC.NORTHWEST).add(new JLabel("Tooltip delay (ms)"));
+        JSlider s=new JSlider(0,2000,ToolTipManager.sharedInstance().getInitialDelay());
+        s.addChangeListener(ev->ToolTipManager.sharedInstance().setInitialDelay(s.getValue()));
+        GBC.create(body).grid(0,y++).weightx(1).insets(0,BORDER_PADDING,0,BORDER_PADDING).fill(GBC.HORIZONTAL).add(s);
+        GBC.create(body).grid(0,y++).insets(BORDER_PADDING,BORDER_PADDING,0,BORDER_PADDING).anchor(GBC.NORTHWEST).add(new JLabel("<html><i>Ocean/Midnight/Nord/Crimson auto-fix switching bug</i></html>"));
         contentPane.setLayout(new BorderLayout());
-        contentPane.add(body, BorderLayout.NORTH);
+        contentPane.add(body,BorderLayout.NORTH);
+    }
+    public static void applyTheme(String t){
+        try{
+            // clear prior custom keys
+            for(String k:new String[]{"Panel.background","TabbedPane.background","TabbedPane.contentAreaColor","Button.background","TextField.background","Component.accentColor"}){
+                UIManager.put(k,null);
+                UIManager.getLookAndFeelDefaults().put(k,null);
+            }
+            if("Light".equals(t)) FlatLightLaf.setup();
+            else if("Ocean".equals(t)){ FlatDarkLaf.setup(); UIManager.put("Panel.background",new Color(0,105,148)); UIManager.put("TabbedPane.contentAreaColor",new Color(0,80,120)); UIManager.put("Component.accentColor",new Color(0,180,220));}
+            else if("Midnight".equals(t)){ FlatMacDarkLaf.setup(); UIManager.put("Panel.background",new Color(18,18,30)); UIManager.put("TabbedPane.contentAreaColor",new Color(22,22,40));}
+            else if("Nord".equals(t)){ FlatDarkLaf.setup(); UIManager.put("Panel.background",new Color(46,52,64)); UIManager.put("TabbedPane.contentAreaColor",new Color(59,66,82)); UIManager.put("Component.accentColor",new Color(136,192,208));}
+            else if("Crimson".equals(t)){ FlatDarkLaf.setup(); UIManager.put("Panel.background",new Color(60,15,20)); UIManager.put("TabbedPane.contentAreaColor",new Color(90,20,25)); UIManager.put("Component.accentColor",new Color(200,40,60));}
+            else FlatDarkLaf.setup();
+            for(Window w:Window.getWindows()) SwingUtilities.updateComponentTreeUI(w);
+        }catch(Exception ex){ex.printStackTrace();}
     }
 }

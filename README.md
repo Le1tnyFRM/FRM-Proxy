@@ -1,53 +1,29 @@
-# FRM Proxy v1.0.5
-> **The modern, improved Minecraft version bridge — based on ViaProxy.**
+# FRM Proxy — 1.0.5 ◆ Modern Minecraft Bridge
 
-FRM Proxy lets you join **any** Minecraft server version from your favourite client version. Clean UI, Ocean/Dark/Light themes, and simple setup.
+> **Not just a fork.** FRM Proxy is a rebuilt experience on top of ViaProxy — faster handshakes, cleaner UI, real themes, and hardened 6b6t / anarchy support.
 
-**Main dev:** Le1tny — **Helped:** aagaming22
+**Main dev: Le1tny** • **Helped: aagaming22** • **Discord: https://discord.gg/JDnqyqWm43**
 
-**Discord:** https://discord.gg/JDnqyqWm43 — **Releases:** https://github.com/Le1tnyFRM/FRM-Proxy/releases
+### Why FRM Proxy?
+- **6b6t-ready** — fixed `Badly compressed packet` (threshold sync 256) & auto-recovery, better keepalive and chunk handling for anarchy servers
+- **Modern UI** — FlatLaf, rounded 12px, 6 themes: Dark / Light / Ocean / Midnight / Nord / Crimson
+- **Universal version bridge** — Release 1.0.0→26.2, Beta/Alpha/Classic/CPE, April Fools, Combat snaps, Bedrock 1.26.30 (WIP)
+- **Client freedom** — Join any listed server from 1.7.2→26.2 + Bedrock via Geyser
 
-## What is FRM Proxy?
-FRM Proxy is a standalone proxy that translates between Minecraft protocol versions (Classic → Latest + Bedrock). Run the jar, set server address + version, hit **Start** and join on `127.0.0.1:25568` (port may be different).
+### Download
+**GitHub Releases → https://github.com/Le1tnyFRM/FRM-Proxy/releases** — get `FRM-Proxy-1.0.5.jar`. `java -jar FRM-Proxy-1.0.5.jar` to launch GUI.
 
-Forked from ViaProxy and rebranded with a darker UI, fixed theme switching, updated update-check and FRM branding.
+### Quick Start
+1. Drop jar in empty folder 2. Run it 3. Fill Server Address + Version 4. Add account in Accounts if online-mode 5. **Start** → join `127.0.0.1:25568`
 
-## Supported Server Versions
-- Release 1.0.0 - 26.2
-- Beta b1.0 - b1.8.1
-- Alpha a1.0.15 - a1.2.6
-- Classic c0.0.15 - c0.30 (CPE)
-- April Fools / Combat Snapshots
-- Bedrock 1.26.30 (WIP)
+### How to use FRM-Proxy
+Tutorial: https://youtu.be/oKGCrDZkbCQ
 
-## Supported Client Versions
-- Release 1.7.2 - 26.2
-- Bedrock via Geyser
-- April Fools / Beta 1.7.3 via plugins
+### 6b6t Tips
+Use `Auto Detect (1.7+ servers)` or explicit target, keep compression at 256. If you hit compression kick, restart — threshold now auto-corrects.
 
-## Features
-- Join online-mode servers with Microsoft/offline accounts
-- Chat signing handling
-- Transfer & cookies support
-- Simple Voice Chat support
-- Three themes: Dark / Light / Ocean
+### License
+ViaProxy © RK_01/RaphiMC & Lenni0451 under **GPL-3.0**. FRM Proxy is derivative — **must stay GPL-3.0** unless all copyright holders relicense. See LICENSE.
 
-## How to use FRM-Proxy
-Here is a tutorial on how to use our software:
-https://youtu.be/oKGCrDZkbCQ
-
-## Download
-Latest stable: **https://github.com/Le1tnyFRM/FRM-Proxy/releases** — just download `FRM-Proxy-1.0.5.jar` (or `+java8` for Java 8) and double click or run with `java -jar FRM-Proxy-1.0.5.jar`
-
-## Quick Start (GUI)
-1. Download jar from releases
-2. Put in empty folder
-3. Run jar — UI opens
-4. Enter Server Address + Version, choose account
-5. Click Start — connect with your client to `127.0.0.1:25568`
-
-## Credits
-Main dev: **Le1tny**, Helped: **aagaming22**. Based on ViaProxy by RK_01/RaphiMC & Lenni0451.
-
-## Contact / Issues
-Open an issue at https://github.com/Le1tnyFRM/FRM-Proxy/issues or join https://discord.gg/JDnqyqWm43
+### Issues & Ideas
+https://github.com/Le1tnyFRM/FRM-Proxy/issues — or Discord above.
