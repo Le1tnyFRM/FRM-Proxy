@@ -32,6 +32,10 @@ Forked from ViaProxy and rebranded with a darker UI, fixed theme switching, upda
 - Simple Voice Chat support
 - Three themes: Dark / Light / Ocean
 
+## How to use FRM-Proxy
+Here is a tutorial on how to use our software:
+https://youtu.be/oKGCrDZkbCQ
+
 ## Download
 Latest stable: **https://github.com/Le1tnyFRM/FRM-Proxy/releases** — just download `FRM-Proxy-1.0.5.jar` (or `+java8` for Java 8) and double click or run with `java -jar FRM-Proxy-1.0.5.jar`
 
