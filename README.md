@@ -12,7 +12,7 @@ For a full user guide go to the [Usage for Players](#usage-for-players-gui) sect
 - Classic (c0.0.15 - c0.30 including [CPE](https://wiki.vg/Classic_Protocol_Extension))
 - April Fools (3D Shareware, 20w14infinite, 25w14craftmine)
 - Combat Snapshots (Combat Test 8c)
-- Bedrock Edition 1.26.30 (WIP, [Many features are missing](https://github.com/RaphiMC/ViaBedrock#features))
+- Bedrock Edition 1.26.30 (WIP, many things are missing and we are planing on stopping bedrock updates)
 
 ## Supported Client versions
 - Release (1.7.2 - 26.2)
@@ -67,8 +67,8 @@ Tutorial: https://youtu.be/oKGCrDZkbCQ
 
 ## Credits
 Main dev: **Le1tny** | Helped: **aagaming22**  
-Based on ViaProxy by RK_01/RaphiMC & Lenni0451 (GPL-3.0)
+Based on ViaProxy by RK_01/RaphiMC & Lenni0451 
 
 ## Contact
-If you encounter any issues, please report them on the [issue tracker](https://github.com/Le1tnyFRM/FRM-Proxy/issues).  
+If you encounter any issues, please report them on the [issue page](https://github.com/Le1tnyFRM/FRM-Proxy/issues).  
 Discord: https://discord.gg/JDnqyqWm43
