@@ -27,22 +27,18 @@ public class UISettingsTab extends UITab {
     }
     public static void applyTheme(String t){
         try{
-            clear();
+            // only clear BEFORE installing new LAF - do not clear after or you delete base Light/Dark keys
+            for(String k:K){
+                UIManager.put(k,null);
+                try{UIManager.getDefaults().remove(k);}catch(Exception ignored){}
+            }
             if("Light".equals(t)) FlatLightLaf.setup();
             else if("Ocean".equals(t)){ FlatDarkLaf.setup(); UIManager.put("Panel.background",new Color(0,105,148)); UIManager.put("TabbedPane.contentAreaColor",new Color(0,80,120)); UIManager.put("Component.accentColor",new Color(0,180,220));}
             else if("Midnight".equals(t)){ FlatDarkLaf.setup(); UIManager.put("Panel.background",new Color(18,18,30)); UIManager.put("TabbedPane.contentAreaColor",new Color(22,22,40));}
             else if("Nord".equals(t)){ FlatDarkLaf.setup(); UIManager.put("Panel.background",new Color(46,52,64)); UIManager.put("TabbedPane.contentAreaColor",new Color(59,66,82)); UIManager.put("Component.accentColor",new Color(136,192,208));}
             else if("Crimson".equals(t)){ FlatDarkLaf.setup(); UIManager.put("Panel.background",new Color(60,15,20)); UIManager.put("TabbedPane.contentAreaColor",new Color(90,20,25)); UIManager.put("Component.accentColor",new Color(200,40,60));}
             else FlatDarkLaf.setup();
-            if("Dark".equals(t)||"Light".equals(t)) clear();
             FlatLaf.updateUI();
         }catch(Exception ex){ex.printStackTrace();}
-    }
-    private static void clear(){
-        for(String k:K){
-            UIManager.put(k,null);
-            try{UIManager.getLookAndFeelDefaults().put(k,null);}catch(Exception ignored){}
-            try{UIManager.getDefaults().remove(k);}catch(Exception ignored){}
-        }
     }
 }
