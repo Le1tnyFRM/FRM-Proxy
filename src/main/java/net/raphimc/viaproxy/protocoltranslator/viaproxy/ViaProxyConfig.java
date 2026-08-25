@@ -126,6 +126,10 @@ public class ViaProxyConfig {
     @Description("The threshold for packet compression. Packets larger than this size will be compressed. (-1 to disable)")
     private int compressionThreshold = 256;
 
+    @Option("fix-6b6t-compression")
+    @Description("Fix 6b6t Badly compressed packet: clamp threshold <128 to 256")
+    private boolean fix6b6tCompression = true;
+
     @Option("allow-beta-pinging")
     @Description("Enabling this will allow you to ping <= b1.7.3 servers. This may cause issues with servers that block too frequent connections.")
     private boolean allowBetaPinging = false;
@@ -425,6 +429,15 @@ public class ViaProxyConfig {
 
     public void setCompressionThreshold(final int compressionThreshold) {
         this.compressionThreshold = compressionThreshold;
+        this.save();
+    }
+
+    public boolean shouldFix6b6tCompression() {
+        return this.fix6b6tCompression;
+    }
+
+    public void setFix6b6tCompression(final boolean fix6b6tCompression) {
+        this.fix6b6tCompression = fix6b6tCompression;
         this.save();
     }
 

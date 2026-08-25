@@ -40,7 +40,7 @@ public class CompressionPacketHandler extends PacketHandler {
     public boolean handleP2S(Packet packet, List<ChannelFutureListener> listeners) {
         if (packet instanceof S2CPlaySetCompressionPacket setCompressionPacket) {
             int th = setCompressionPacket.compressionThreshold;
-            if (th >= 0 && th < 128) th = 256;
+            if (ViaProxy.getConfig().shouldFix6b6tCompression() && th >= 0 && th < 128) th = 256;
             this.proxyConnection.getChannel().attr(MCPipeline.COMPRESSION_THRESHOLD_ATTRIBUTE_KEY).set(th);
             return false;
         } else if (packet instanceof S2CLoginGameProfilePacket) {
@@ -57,7 +57,7 @@ public class CompressionPacketHandler extends PacketHandler {
             }
         } else if (packet instanceof S2CLoginCompressionPacket loginCompressionPacket) {
             int th = loginCompressionPacket.compressionThreshold;
-            if (th >= 0 && th < 128) th = 256;
+            if (ViaProxy.getConfig().shouldFix6b6tCompression() && th >= 0 && th < 128) th = 256;
             this.proxyConnection.getChannel().attr(MCPipeline.COMPRESSION_THRESHOLD_ATTRIBUTE_KEY).set(th);
             return false;
         }

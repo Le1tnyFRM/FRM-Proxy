@@ -142,6 +142,14 @@ public class AdvancedTab extends UITab {
             this.fakeAcceptResourcePacks.setSelected(ViaProxy.getConfig().shouldFakeAcceptResourcePacks());
             checkboxes.add(this.fakeAcceptResourcePacks);
         }
+        {
+            JCheckBox fix6b6t = new JCheckBox("Packet size Threshold 128 (recommended for 6b6t)");
+            fix6b6t.setToolTipText("When enabled: clamp compression threshold <128 to 256 to fix Badly compressed packet on 6b6t. Disable to use server value (old behavior).");
+            fix6b6t.setSelected(ViaProxy.getConfig().shouldFix6b6tCompression());
+            fix6b6t.addActionListener(e -> ViaProxy.getConfig().setFix6b6tCompression(fix6b6t.isSelected()));
+            checkboxes.add(fix6b6t);
+            this.fakeAcceptResourcePacks.putClientProperty("6b6tBox", fix6b6t);
+        }
         GBC.create(body).grid(0, gridy++).insets(BODY_BLOCK_PADDING, BORDER_PADDING, 0, BODY_BLOCK_PADDING).fill(GBC.BOTH).weight(1, 1).add(checkboxes);
 
         parent.add(body, BorderLayout.NORTH);

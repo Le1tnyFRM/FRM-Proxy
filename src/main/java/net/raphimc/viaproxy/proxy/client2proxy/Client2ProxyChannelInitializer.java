@@ -46,6 +46,9 @@ public class Client2ProxyChannelInitializer extends MinecraftChannelInitializer 
 
     @Override
     protected void initChannel(Channel channel) {
+        channel.config().setOption(io.netty.channel.ChannelOption.TCP_NODELAY, true);
+        channel.config().setOption(io.netty.channel.ChannelOption.SO_KEEPALIVE, true);
+        channel.config().setOption(io.netty.channel.ChannelOption.CONNECT_TIMEOUT_MILLIS, ViaProxy.getConfig().getConnectTimeout());
         if (ViaProxy.EVENT_MANAGER.call(new Client2ProxyChannelInitializeEvent(ITyped.Type.PRE, channel, false)).isCancelled()) {
             channel.close();
             return;
