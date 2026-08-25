@@ -1,4 +1,4 @@
-# FRM Proxy — 1.0.5 ◆ Modern Minecraft Bridge
+# FRM Proxy — 1.1.0 ◆ Modern Minecraft Bridge
 
 > **Not just a fork.** FRM Proxy is a rebuilt experience on top of ViaProxy — faster handshakes, cleaner UI, real themes, and hardened 6b6t / anarchy support.
 
@@ -11,7 +11,7 @@
 - **Client freedom** — Join any listed server from 1.7.2→26.2 + Bedrock via Geyser
 
 ### Download
-**GitHub Releases → https://github.com/Le1tnyFRM/FRM-Proxy/releases** — get `FRM-Proxy-1.0.5.jar`. `java -jar FRM-Proxy-1.0.5.jar` to launch GUI.
+**GitHub Releases → https://github.com/Le1tnyFRM/FRM-Proxy/releases** — get `FRM-Proxy-1.1.0.jar`. `java -jar FRM-Proxy-1.1.0.jar` to launch GUI.
 
 ### Quick Start
 1. Drop jar in empty folder 2. Run it 3. Fill Server Address + Version 4. Add account in Accounts if online-mode 5. **Start** → join `127.0.0.1:25568`
