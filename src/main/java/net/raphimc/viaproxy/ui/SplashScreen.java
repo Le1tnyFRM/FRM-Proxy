@@ -46,9 +46,9 @@ public class SplashScreen extends JFrame {
             g2.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
             int w=getWidth(), h=getHeight();
             if(phase==3){
-                // fade to grey and show nothing else - grey bg for UI pop
+                Color uiGrey=new Color(18,18,20);
                 float f=1-fade;
-                g2.setColor(new Color((int)(10+f*110), (int)(10+f*110), (int)(12+f*110))); g2.fillRect(0,0,w,h);
+                g2.setColor(new Color((int)(10+f*(uiGrey.getRed()-10)), (int)(10+f*(uiGrey.getGreen()-10)), (int)(12+f*(uiGrey.getBlue()-12)))); g2.fillRect(0,0,w,h);
                 g2.setColor(new Color(255,255,255,(int)(180*fade))); g2.setFont(new Font("Arial", Font.BOLD, 44)); FontMetrics fm=g2.getFontMetrics();
                 String txt="FRM PROXY"; int totalW=fm.stringWidth(txt); int tx=w/2 - totalW/2, ty=h/2+8;
                 g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, fade));
@@ -101,7 +101,7 @@ public class SplashScreen extends JFrame {
             // turns grey in fade phase - parent will handle, but keep bar
             FluidPanel fp=null; Container p=getParent(); while(p!=null){ if(p instanceof SplashScreen) { fp=((SplashScreen)p).fluidPanel; break; } p=p.getParent(); }
             boolean greying = fp!=null && fp.phase==3;
-            if(greying){ g2.setColor(new Color(140,140,140)); g2.fillRoundRect(18,10,w-36,h-18,12,12); int pw=(int)((w-36)*progress); g2.setColor(new Color(180,180,180)); g2.fillRoundRect(18,10,pw,h-18,12,12); }
+            if(greying){ Color bg=new Color(18,18,20); g2.setColor(bg); g2.fillRoundRect(18,10,w-36,h-18,12,12); int pw=(int)((w-36)*progress); g2.setColor(new Color(36,36,42)); g2.fillRoundRect(18,10,pw,h-18,12,12); }
             else { g2.setColor(new Color(255,255,255,18)); g2.fillRoundRect(18,10,w-36,h-18,12,12); int pw=(int)((w-36)*progress); g2.setColor(new Color(255,215,0)); g2.fillRoundRect(18,10,pw,h-18,12,12); g2.setColor(new Color(255,255,255,70)); if(pw>12) g2.fillRoundRect(18,10,pw,4,6,6); }
             g2.setColor(greying? new Color(60,60,60): Color.WHITE); g2.setFont(g2.getFont().deriveFont(Font.BOLD,11f)); FontMetrics fm=g2.getFontMetrics();
             int tw=fm.stringWidth(text); g2.drawString(text,(w-tw)/2, h/2 + fm.getAscent()/2 -1);
