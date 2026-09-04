@@ -124,36 +124,30 @@ public class SplashScreen extends JFrame {
             }
         }
         private void drawDetailedArrow(Graphics2D g2,int x0,int y0,int x1,int y1,boolean right){
-            int dx=x1-x0, dy=y1-y0; double len=Math.hypot(dx,dy); double ang=Math.atan2(dy,dx);
-            // shaft
-            g2.setColor(new Color(2,188,216)); g2.setStroke(new BasicStroke(18,BasicStroke.CAP_ROUND,BasicStroke.JOIN_ROUND));
-            g2.drawLine(x0,y0,x1,y1);
-            g2.setColor(new Color(0,130,170,90)); g2.setStroke(new BasicStroke(18,BasicStroke.CAP_ROUND,BasicStroke.JOIN_ROUND));
-            g2.drawLine(x0+6,y0+2,x1-4,y1+2);
-            // head - sharp, tip exactly at x1,y1
-            int headLen=36, headW=32;
+            double dx=x1-x0, dy=y1-y0; double ang=Math.atan2(dy,dx);
+            double ux=Math.cos(ang), uy=Math.sin(ang);
+            double px=-uy, py=ux;
+            // chevron arrow like reference: tip + notched tail, deep blue #0000CC
+            int len=78, h=62, notch=22;
             double tipX=x1, tipY=y1;
-            double baseX=x1 - Math.cos(ang)*headLen;
-            double baseY=y1 - Math.sin(ang)*headLen;
-            double perpX=-Math.sin(ang)*headW, perpY=Math.cos(ang)*headW;
-            Polygon head=new Polygon(
-                new int[]{(int)tipX,(int)(baseX+perpX),(int)(baseX-perpX)},
-                new int[]{(int)tipY,(int)(baseY+perpY),(int)(baseY-perpY)},3);
-            g2.setColor(new Color(2,188,216)); g2.fillPolygon(head);
-            g2.setColor(new Color(0,90,120)); g2.setStroke(new BasicStroke(2)); g2.drawPolygon(head);
-            // fletching at tail
-            int fx0=x0, fy0=y0;
-            int fLen=18, fW=14;
-            double fBaseX=x0 + Math.cos(ang)*fLen;
-            double fBaseY=y0 + Math.sin(ang)*fLen;
-            Polygon fletch=new Polygon(
-                new int[]{(int)fx0,(int)(fBaseX+perpX*0.45),(int)(fBaseX-perpX*0.45)},
-                new int[]{(int)fy0,(int)(fBaseY+perpY*0.45),(int)(fBaseY-perpY*0.45)},3);
-            // tail is V shape - draw as two lines
-            g2.setColor(new Color(2,188,216,200));
-            g2.setStroke(new BasicStroke(4,BasicStroke.CAP_ROUND,BasicStroke.JOIN_ROUND));
-            g2.drawLine(fx0,fy0,(int)(fBaseX+perpX*0.5),(int)(fBaseY+perpY*0.5));
-            g2.drawLine(fx0,fy0,(int)(fBaseX-perpX*0.5),(int)(fBaseY-perpY*0.5));
+            double topX=x1 - ux*len + px*h/2, topY=y1 - uy*len + py*h/2;
+            double notchX=x1 - ux*(len-notch) + px*0, notchY=y1 - uy*(len-notch);
+            double botX=x1 - ux*len - px*h/2, botY=y1 - uy*len - py*h/2;
+            Polygon chev=new Polygon(
+                new int[]{(int)tipX,(int)topX,(int)notchX,(int)botX},
+                new int[]{(int)tipY,(int)topY,(int)notchY,(int)botY},4);
+            // flying trail behind
+            g2.setColor(new Color(0,0,180,35));
+            for(int k=1;k<=3;k++){
+                int off=(int)(k*18);
+                Polygon trail=new Polygon(
+                    new int[]{(int)(tipX-ux*off),(int)(topX-ux*off),(int)(notchX-ux*off),(int)(botX-ux*off)},
+                    new int[]{(int)(tipY-uy*off),(int)(topY-uy*off),(int)(notchY-uy*off),(int)(botY-uy*off)},4);
+                g2.fillPolygon(trail);
+            }
+            g2.setColor(new Color(0,0,204));
+            g2.fillPolygon(chev);
+            g2.setColor(new Color(0,0,140)); g2.setStroke(new BasicStroke(2)); g2.drawPolygon(chev);
         }
         private Path2D buildSplashPath(int cx,int cy,float splash){
             Path2D p=new Path2D.Float();
