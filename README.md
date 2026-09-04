@@ -28,7 +28,7 @@ FRM Proxy supports joining to any of the listed server version from any of the l
 - Support for joining on servers which have chat signing enabled from all listed client versions
 - Supports transfer and cookies for <=1.20.4 clients on 1.20.5+ servers
 - Supports Simple Voice Chat mod
-- Fixed `Badly compressed packet` for 6b6t / anarchy servers (1.1.0)
+- Fixed `Badly compressed packet` for 6b6t / anarchy servers (1.1.2)
 
 ## Releases
 ### Executable Jar File
@@ -40,7 +40,7 @@ Tutorial: https://youtu.be/oKGCrDZkbCQ
 ## Usage for Players (GUI)
 1. Download the latest version from the [Releases section](#executable-jar-file)
 2. Put the jar file into a folder (FRM Proxy will generate config files and store some data there)
-3. Run the jar file (`java -jar FRM-Proxy-1.1.0.jar`)
+3. Run the jar file (`java -jar FRM-Proxy-1.1.2.jar`)
 4. Fill in the required fields like server address and version
 5. If you want to join online mode servers, add your Minecraft account in the Accounts tab
 6. Click on "Start"
@@ -50,7 +50,7 @@ Tutorial: https://youtu.be/oKGCrDZkbCQ
 ## Usage for Server owners (Config)
 1. Download the latest version from the [Releases section](#executable-jar-file)
 2. Put the jar file into a folder
-3. Run the jar file (Using `java -jar FRM-Proxy-1.1.0.jar config viaproxy.yml`)
+3. Run the jar file (Using `java -jar FRM-Proxy-1.1.2.jar config viaproxy.yml`)
 4. FRM Proxy now generates a config file called `viaproxy.yml` in the same folder and exits
 5. Open the config file and configure the proxy (Most important options are at the top)
 6. Start the proxy using the start command and test whether it works
@@ -59,7 +59,7 @@ Tutorial: https://youtu.be/oKGCrDZkbCQ
 ## Usage for Server owners (CLI)
 1. Download the latest version from the [Releases section](#executable-jar-file)
 2. Put the jar file into a folder
-3. Run the jar file (Using `java -jar FRM-Proxy-1.1.0.jar cli --help`)
+3. Run the jar file (Using `java -jar FRM-Proxy-1.1.2.jar cli --help`)
 4. FRM Proxy will print the CLI usage and exit
 5. Configure the proxy and optionally put the finished start command into a script
 6. Start the proxy and test whether it works
