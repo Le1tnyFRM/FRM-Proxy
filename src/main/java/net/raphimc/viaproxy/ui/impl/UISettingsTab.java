@@ -5,57 +5,45 @@ import net.raphimc.viaproxy.ui.UITab;
 import net.raphimc.viaproxy.ui.ViaProxyWindow;
 import com.formdev.flatlaf.FlatDarkLaf;
 import com.formdev.flatlaf.FlatLightLaf;
-import com.formdev.flatlaf.FlatLaf;
+import com.formdev.flatlaf.themes.FlatMacDarkLaf;
+import com.formdev.flatlaf.themes.FlatMacLightLaf;
 import javax.swing.*;
 import java.awt.*;
 import static net.raphimc.viaproxy.ui.ViaProxyWindow.BORDER_PADDING;
 
 public class UISettingsTab extends UITab {
-    public UISettingsTab(final ViaProxyWindow f){ super(f,"ui_settings"); }
-    @Override protected void init(JPanel c){
-        JPanel b=new JPanel(new GridBagLayout()); int y=0;
-        JLabel th=new JLabel("Theme"); th.setFont(th.getFont().deriveFont(Font.BOLD,13f));
-        GBC.create(b).grid(0,y++).insets(BORDER_PADDING,BORDER_PADDING,0,BORDER_PADDING).anchor(GBC.NORTHWEST).add(th);
-        JComboBox<String> box=new JComboBox<>(new String[]{"Dark","aagaming mod","Ocean","Midnight","Nord","Crimson","Sunset"});
-        box.addActionListener(e->applyTheme(this.viaProxyWindow,(String)box.getSelectedItem()));
-        GBC.create(b).grid(0,y++).weightx(1).insets(0,BORDER_PADDING,0,BORDER_PADDING).fill(GBC.HORIZONTAL).add(box);
-        GBC.create(b).grid(0,y++).insets(16,BORDER_PADDING,0,BORDER_PADDING).anchor(GBC.NORTHWEST).add(new JLabel("Tooltip delay (ms)"));
+    public UISettingsTab(final ViaProxyWindow frame) { super(frame, "ui_settings"); }
+    @Override protected void init(JPanel contentPane) {
+        JPanel body = new JPanel(new GridBagLayout());
+        int y=0;
+        GBC.create(body).grid(0,y++).insets(BORDER_PADDING,BORDER_PADDING,0,BORDER_PADDING).anchor(GBC.NORTHWEST).add(new JLabel("Theme"));
+        String[] themes={"Dark","Light","Ocean","Midnight","Nord","Crimson"};
+        JComboBox<String> box=new JComboBox<>(themes);
+        try{box.setSelectedItem(UIManager.getLookAndFeel().getName());}catch(Exception ignored){}
+        box.addActionListener(e->applyTheme((String)box.getSelectedItem()));
+        GBC.create(body).grid(0,y++).weightx(1).insets(0,BORDER_PADDING,0,BORDER_PADDING).fill(GBC.HORIZONTAL).add(box);
+        GBC.create(body).grid(0,y++).insets(BORDER_PADDING,BORDER_PADDING,0,BORDER_PADDING).anchor(GBC.NORTHWEST).add(new JLabel("Tooltip delay (ms)"));
         JSlider s=new JSlider(0,2000,ToolTipManager.sharedInstance().getInitialDelay());
         s.addChangeListener(ev->ToolTipManager.sharedInstance().setInitialDelay(s.getValue()));
-        GBC.create(b).grid(0,y++).weightx(1).insets(0,BORDER_PADDING,0,BORDER_PADDING).fill(GBC.HORIZONTAL).add(s);
-        c.setLayout(new BorderLayout()); c.add(b,BorderLayout.NORTH);
+        GBC.create(body).grid(0,y++).weightx(1).insets(0,BORDER_PADDING,0,BORDER_PADDING).fill(GBC.HORIZONTAL).add(s);
+        GBC.create(body).grid(0,y++).insets(BORDER_PADDING,BORDER_PADDING,0,BORDER_PADDING).anchor(GBC.NORTHWEST).add(new JLabel("<html><i>Ocean/Midnight/Nord/Crimson auto-fix switching bug</i></html>"));
+        contentPane.setLayout(new BorderLayout());
+        contentPane.add(body,BorderLayout.NORTH);
     }
-    public static void applyTheme(ViaProxyWindow win, String t){
+    public static void applyTheme(String t){
         try{
-            for(String k:new String[]{"Panel.background","TabbedPane.background","TabbedPane.contentAreaColor","Component.accentColor"}){ UIManager.put(k,null); try{UIManager.getDefaults().remove(k);}catch(Exception ignored){} }
-            if("aagaming mod".equals(t)) FlatLightLaf.setup();
-            else if("Ocean".equals(t)){ FlatDarkLaf.setup(); UIManager.put("Panel.background",new Color(0,105,148)); UIManager.put("TabbedPane.contentAreaColor",new Color(0,80,120)); UIManager.put("TabbedPane.background",new Color(0,80,120)); UIManager.put("Component.accentColor",new Color(0,180,220));}
-            else if("Midnight".equals(t)){ FlatDarkLaf.setup(); UIManager.put("Panel.background",new Color(18,18,30)); UIManager.put("TabbedPane.contentAreaColor",new Color(24,24,44)); UIManager.put("TabbedPane.background",new Color(24,24,44));}
-            else if("Nord".equals(t)){ FlatDarkLaf.setup(); UIManager.put("Panel.background",new Color(46,52,64)); UIManager.put("TabbedPane.contentAreaColor",new Color(59,66,82)); UIManager.put("TabbedPane.background",new Color(59,66,82)); UIManager.put("Component.accentColor",new Color(136,192,208));}
-            else if("Crimson".equals(t)){ FlatDarkLaf.setup(); UIManager.put("Panel.background",new Color(72,18,22)); UIManager.put("TabbedPane.contentAreaColor",new Color(95,25,30)); UIManager.put("TabbedPane.background",new Color(95,25,30)); UIManager.put("Component.accentColor",new Color(220,60,70));}
-            else if("Sunset".equals(t)){ FlatDarkLaf.setup(); UIManager.put("Panel.background",new Color(45,20,35)); UIManager.put("TabbedPane.contentAreaColor",new Color(75,30,45)); UIManager.put("TabbedPane.background",new Color(75,30,45)); UIManager.put("Component.accentColor",new Color(255,140,60));}
-            else if("Light".equals(t)) FlatLightLaf.setup();
+            // clear prior custom keys
+            for(String k:new String[]{"Panel.background","TabbedPane.background","TabbedPane.contentAreaColor","Button.background","TextField.background","Component.accentColor"}){
+                UIManager.put(k,null);
+                UIManager.getLookAndFeelDefaults().put(k,null);
+            }
+            if("Light".equals(t)) FlatLightLaf.setup();
+            else if("Ocean".equals(t)){ FlatDarkLaf.setup(); UIManager.put("Panel.background",new Color(0,105,148)); UIManager.put("TabbedPane.contentAreaColor",new Color(0,80,120)); UIManager.put("Component.accentColor",new Color(0,180,220));}
+            else if("Midnight".equals(t)){ FlatMacDarkLaf.setup(); UIManager.put("Panel.background",new Color(18,18,30)); UIManager.put("TabbedPane.contentAreaColor",new Color(22,22,40));}
+            else if("Nord".equals(t)){ FlatDarkLaf.setup(); UIManager.put("Panel.background",new Color(46,52,64)); UIManager.put("TabbedPane.contentAreaColor",new Color(59,66,82)); UIManager.put("Component.accentColor",new Color(136,192,208));}
+            else if("Crimson".equals(t)){ FlatDarkLaf.setup(); UIManager.put("Panel.background",new Color(60,15,20)); UIManager.put("TabbedPane.contentAreaColor",new Color(90,20,25)); UIManager.put("Component.accentColor",new Color(200,40,60));}
             else FlatDarkLaf.setup();
-            FlatLaf.updateUI();
-            Color bg = UIManager.getColor("Panel.background");
-            Color tabBg = UIManager.getColor("TabbedPane.contentAreaColor");
-            if(tabBg==null) tabBg=bg;
-            if(win!=null) forceAll(win, bg, tabBg);
-            for(Window w: Window.getWindows()) forceAll(w, bg, tabBg);
+            for(Window w:Window.getWindows()) SwingUtilities.updateComponentTreeUI(w);
         }catch(Exception ex){ex.printStackTrace();}
-    }
-    private static void forceAll(Container root, Color bg, Color tabBg){
-        if(bg==null) return;
-        recolor(root, bg, tabBg);
-        root.repaint(); root.revalidate();
-    }
-    private static void recolor(Container c, Color bg, Color tabBg){
-        for(Component comp: c.getComponents()){
-            if(comp instanceof JPanel) comp.setBackground(bg);
-            if(comp instanceof JTabbedPane){ comp.setBackground(tabBg); ((JTabbedPane)comp).setOpaque(true); }
-            if(comp instanceof JScrollPane){ comp.setBackground(bg); ((JScrollPane)comp).getViewport().setBackground(bg); }
-            if(comp instanceof Container) recolor((Container)comp, bg, tabBg);
-        }
-        if(c instanceof JPanel || c instanceof JTabbedPane || c instanceof JFrame || c instanceof JWindow) c.setBackground(bg);
     }
 }
