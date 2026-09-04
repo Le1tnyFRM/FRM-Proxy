@@ -50,7 +50,7 @@ public class ViaProxyWindow extends JFrame {
             UIManager.put("Panel.background", bg);
             UIManager.put("TabbedPane.background", bg);
             UIManager.put("TabbedPane.contentAreaColor", bg);
-            UIManager.put("TabbedPane.tabAreaBackground", new Color(14,14,16));
+            UIManager.put("TabbedPane.tabAreaBackground", bg);
             UIManager.put("TabbedPane.underlineColor", new Color(255,215,0));
             UIManager.put("TabbedPane.hoverColor", new Color(36,36,42));
             UIManager.put("TabbedPane.selectedBackground", tabBg);
