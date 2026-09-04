@@ -79,6 +79,8 @@ public class ViaProxyWindow extends JFrame {
     }
     private void initWindow() {
         this.setTitle("FRM Proxy v" + ViaProxy.VERSION);
+        this.setUndecorated(true);
+        this.setBackground(new Color(0,0,0,0));
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.addWindowListener(new WindowAdapter() {
             @Override public void windowClosing(WindowEvent e) {
@@ -93,8 +95,20 @@ public class ViaProxyWindow extends JFrame {
         this.contentPane.setFont(this.contentPane.getFont().deriveFont(Font.BOLD, 12f));
         this.contentPane.setBackground(new Color(48,48,48));
         this.contentPane.setOpaque(true);
-        this.setContentPane(this.contentPane);
-        this.getRootPane().setBorder(BorderFactory.createEmptyBorder(2,2,2,2));
+        JPanel root=new JPanel(new BorderLayout()); root.setBackground(new Color(48,48,48)); root.setBorder(BorderFactory.createLineBorder(new Color(60,60,60),1));
+        JPanel bar=new JPanel(new BorderLayout()); bar.setBackground(new Color(58,58,58)); bar.setPreferredSize(new Dimension(0,30));
+        JLabel title=new JLabel("  FRM Proxy v" + ViaProxy.VERSION); title.setForeground(Color.WHITE); title.setFont(title.getFont().deriveFont(Font.BOLD,12f));
+        JButton close=new JButton("X"); close.setFocusPainted(false); close.setBorderPainted(false); close.setContentAreaFilled(false); close.setForeground(Color.WHITE); close.setFont(close.getFont().deriveFont(Font.BOLD,14f)); close.setPreferredSize(new Dimension(44,30));
+        close.addMouseListener(new java.awt.event.MouseAdapter(){ public void mouseEntered(java.awt.event.MouseEvent e){ close.setBackground(new Color(220,50,50)); close.setContentAreaFilled(true); } public void mouseExited(java.awt.event.MouseEvent e){ close.setContentAreaFilled(false); }});
+        close.addActionListener(e-> dispatchEvent(new WindowEvent(this, WindowEvent.WINDOW_CLOSING)));
+        bar.add(title, BorderLayout.WEST); bar.add(close, BorderLayout.EAST);
+        final Point[] drag=new Point[1];
+        bar.addMouseListener(new java.awt.event.MouseAdapter(){ public void mousePressed(java.awt.event.MouseEvent e){ drag[0]=e.getPoint(); }});
+        bar.addMouseMotionListener(new java.awt.event.MouseMotionAdapter(){ public void mouseDragged(java.awt.event.MouseEvent e){ Point p=e.getLocationOnScreen(); setLocation(p.x - drag[0].x, p.y - drag[0].y); }});
+        title.addMouseListener(new java.awt.event.MouseAdapter(){ public void mousePressed(java.awt.event.MouseEvent e){ drag[0]=SwingUtilities.convertPoint(title, e.getPoint(), bar); }});
+        title.addMouseMotionListener(new java.awt.event.MouseMotionAdapter(){ public void mouseDragged(java.awt.event.MouseEvent e){ Point p=e.getLocationOnScreen(); setLocation(p.x - drag[0].x, p.y - drag[0].y); }});
+        root.add(bar, BorderLayout.NORTH); root.add(this.contentPane, BorderLayout.CENTER);
+        this.setContentPane(root);
     }
     private void initTabs() {
         RStream.of(this).fields().filter(field -> UITab.class.isAssignableFrom(field.type())).forEach(field -> {
