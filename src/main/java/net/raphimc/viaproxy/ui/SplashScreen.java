@@ -80,13 +80,11 @@ public class SplashScreen extends JFrame {
             g2.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
             int cx=getWidth()/2, cy=getHeight()/2 - 10;
             if(!arrowsDone){
-                g2.setColor(new Color(2,188,216)); g2.setStroke(new BasicStroke(16,BasicStroke.CAP_ROUND,BasicStroke.JOIN_ROUND));
-                g2.drawLine((int)arrow1X-70, cy, (int)arrow1X+28, cy);
-                Polygon h1=new Polygon(new int[]{(int)arrow1X+28,(int)arrow1X-12,(int)arrow1X-12}, new int[]{cy,cy-30,cy+30},3);
-                g2.fillPolygon(h1);
-                g2.drawLine((int)arrow2X+70, cy, (int)arrow2X-28, cy);
-                Polygon h2=new Polygon(new int[]{(int)arrow2X-28,(int)arrow2X+12,(int)arrow2X+12}, new int[]{cy,cy-30,cy+30},3);
-                g2.fillPolygon(h2);
+                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                // left arrow - detailed: shaft stops at base, head at tip, with outline and fletching
+                int ax1=(int)arrow1X, ax2=(int)arrow2X;
+                drawDetailedArrow(g2, ax1-70, cy, ax1-12, cy, true);
+                drawDetailedArrow(g2, ax2+70, cy, ax2+12, cy, false);
             }
             if(arrowsDone){
                 float a = Math.min(1f, splash/160f);
@@ -124,6 +122,38 @@ public class SplashScreen extends JFrame {
                     }
                 }
             }
+        }
+        private void drawDetailedArrow(Graphics2D g2,int x0,int y0,int x1,int y1,boolean right){
+            int dx=x1-x0, dy=y1-y0; double len=Math.hypot(dx,dy); double ang=Math.atan2(dy,dx);
+            // shaft
+            g2.setColor(new Color(2,188,216)); g2.setStroke(new BasicStroke(18,BasicStroke.CAP_ROUND,BasicStroke.JOIN_ROUND));
+            g2.drawLine(x0,y0,x1,y1);
+            g2.setColor(new Color(0,130,170,90)); g2.setStroke(new BasicStroke(18,BasicStroke.CAP_ROUND,BasicStroke.JOIN_ROUND));
+            g2.drawLine(x0+6,y0+2,x1-4,y1+2);
+            // head - sharp, tip exactly at x1,y1
+            int headLen=36, headW=32;
+            double tipX=x1, tipY=y1;
+            double baseX=x1 - Math.cos(ang)*headLen;
+            double baseY=y1 - Math.sin(ang)*headLen;
+            double perpX=-Math.sin(ang)*headW, perpY=Math.cos(ang)*headW;
+            Polygon head=new Polygon(
+                new int[]{(int)tipX,(int)(baseX+perpX),(int)(baseX-perpX)},
+                new int[]{(int)tipY,(int)(baseY+perpY),(int)(baseY-perpY)},3);
+            g2.setColor(new Color(2,188,216)); g2.fillPolygon(head);
+            g2.setColor(new Color(0,90,120)); g2.setStroke(new BasicStroke(2)); g2.drawPolygon(head);
+            // fletching at tail
+            int fx0=x0, fy0=y0;
+            int fLen=18, fW=14;
+            double fBaseX=x0 + Math.cos(ang)*fLen;
+            double fBaseY=y0 + Math.sin(ang)*fLen;
+            Polygon fletch=new Polygon(
+                new int[]{(int)fx0,(int)(fBaseX+perpX*0.45),(int)(fBaseX-perpX*0.45)},
+                new int[]{(int)fy0,(int)(fBaseY+perpY*0.45),(int)(fBaseY-perpY*0.45)},3);
+            // tail is V shape - draw as two lines
+            g2.setColor(new Color(2,188,216,200));
+            g2.setStroke(new BasicStroke(4,BasicStroke.CAP_ROUND,BasicStroke.JOIN_ROUND));
+            g2.drawLine(fx0,fy0,(int)(fBaseX+perpX*0.5),(int)(fBaseY+perpY*0.5));
+            g2.drawLine(fx0,fy0,(int)(fBaseX-perpX*0.5),(int)(fBaseY-perpY*0.5));
         }
         private Path2D buildSplashPath(int cx,int cy,float splash){
             Path2D p=new Path2D.Float();
