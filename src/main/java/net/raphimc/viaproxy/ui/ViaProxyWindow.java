@@ -91,6 +91,8 @@ public class ViaProxyWindow extends JFrame {
         this.setMinimumSize(new Dimension(560, 420));
         this.setLocationRelativeTo(null);
         this.contentPane.setFont(this.contentPane.getFont().deriveFont(Font.BOLD, 12f));
+        this.contentPane.setBackground(new Color(48,48,48));
+        this.contentPane.setOpaque(true);
         this.setContentPane(this.contentPane);
         this.getRootPane().setBorder(BorderFactory.createEmptyBorder(2,2,2,2));
     }
