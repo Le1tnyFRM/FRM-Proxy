@@ -99,10 +99,13 @@ public class ViaProxyWindow extends JFrame {
         JButton min=new JButton("—"); min.setFocusPainted(false); min.setBorderPainted(false); min.setContentAreaFilled(false); min.setForeground(Color.WHITE); min.setFont(min.getFont().deriveFont(Font.BOLD,12f)); min.setPreferredSize(new Dimension(36,34));
         min.addMouseListener(new java.awt.event.MouseAdapter(){ public void mouseEntered(java.awt.event.MouseEvent e){ min.setBackground(new Color(70,70,70)); min.setContentAreaFilled(true);} public void mouseExited(java.awt.event.MouseEvent e){ min.setContentAreaFilled(false);} });
         min.addActionListener(e-> setState(JFrame.ICONIFIED));
+        JButton max=new JButton("□"); max.setFocusPainted(false); max.setBorderPainted(false); max.setContentAreaFilled(false); max.setForeground(Color.WHITE); max.setFont(max.getFont().deriveFont(Font.BOLD,12f)); max.setPreferredSize(new Dimension(36,34));
+        max.addMouseListener(new java.awt.event.MouseAdapter(){ public void mouseEntered(java.awt.event.MouseEvent e){ max.setBackground(new Color(70,70,70)); max.setContentAreaFilled(true);} public void mouseExited(java.awt.event.MouseEvent e){ max.setContentAreaFilled(false);} });
+        max.addActionListener(e->{ if((getExtendedState() & JFrame.MAXIMIZED_BOTH)==0) setExtendedState(JFrame.MAXIMIZED_BOTH); else setExtendedState(JFrame.NORMAL); });
         JButton close=new JButton("X"); close.setFocusPainted(false); close.setBorderPainted(false); close.setContentAreaFilled(false); close.setForeground(Color.WHITE); close.setFont(close.getFont().deriveFont(Font.BOLD,12f)); close.setPreferredSize(new Dimension(36,34));
         close.addMouseListener(new java.awt.event.MouseAdapter(){ public void mouseEntered(java.awt.event.MouseEvent e){ close.setBackground(new Color(220,50,50)); close.setContentAreaFilled(true);} public void mouseExited(java.awt.event.MouseEvent e){ close.setContentAreaFilled(false);} });
         close.addActionListener(e-> dispatchEvent(new WindowEvent(this, WindowEvent.WINDOW_CLOSING)));
-        trailing.add(min); trailing.add(close);
+        trailing.add(min); trailing.add(max); trailing.add(close);
         this.contentPane.putClientProperty("JTabbedPane.trailingComponent", trailing);
         this.setContentPane(this.contentPane);
         this.getRootPane().setBorder(BorderFactory.createLineBorder(new Color(60,60,60),1));
