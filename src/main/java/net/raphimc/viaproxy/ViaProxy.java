@@ -239,9 +239,15 @@ public class ViaProxy {
             splashScreen.setProgress(1f);
             splashScreen.setText("Ready");
             splashScreen.awaitEnter();
+            Rectangle splashBounds = splashScreen.getBounds();
             SwingUtilities.invokeAndWait(() -> {
                 try {
                     foregroundWindow = viaProxyWindow = new ViaProxyWindow();
+                    viaProxyWindow.setBounds(splashBounds);
+                    viaProxyWindow.setLocation(splashBounds.getLocation());
+                    viaProxyWindow.setSize(620,460);
+                    viaProxyWindow.setLocationRelativeTo(null);
+                    if(splashBounds.x!=0 || splashBounds.y!=0) viaProxyWindow.setLocation(splashBounds.x + (splashBounds.width-620)/2, splashBounds.y + (splashBounds.height-380)/2);
                     progressConsumer.accept("Done");
                     splashScreen.dispose();
                 } catch (Throwable e) {

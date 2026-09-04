@@ -40,7 +40,7 @@ public class SplashScreen extends JFrame {
                 repaint();
             }); timer.start();
         }
-        void ding(){ try{ Toolkit.getDefaultToolkit().beep(); new Thread(()->{ try{ float sr=44100; byte[] buf=new byte[(int)(sr*0.12)]; for(int i=0;i<buf.length;i++){ double ang=2*Math.PI*880*i/sr; double env=Math.exp(-i/(sr*0.10)); buf[i]=(byte)(Math.sin(ang)*env*100); } AudioFormat fmt=new AudioFormat(sr,8,1,true,false); Clip c=AudioSystem.getClip(); c.open(fmt,buf,0,buf.length); c.start(); Thread.sleep(160); c.close(); }catch(Exception ignored){}}).start(); }catch(Exception ignored){} }
+        void ding(){ try{ Toolkit.getDefaultToolkit().beep(); java.awt.Toolkit.getDefaultToolkit().beep(); new Thread(()->{ try{ float sr=44100; int len=(int)(sr*0.22); byte[] buf=new byte[len*2]; for(int i=0;i<len;i++){ double t=i/sr; double freq=880*Math.exp(-t*2.2); double env=Math.exp(-t*6)*0.9; short s=(short)(Math.sin(2*Math.PI*freq*t)*env*16000); buf[2*i]=(byte)(s&0xff); buf[2*i+1]=(byte)((s>>8)&0xff); } AudioFormat fmt=new AudioFormat(sr,16,1,true,false); Clip c=AudioSystem.getClip(); c.open(fmt,buf,0,buf.length); FloatControl vol=(FloatControl)c.getControl(FloatControl.Type.MASTER_GAIN); vol.setValue(6.0f); c.start(); Thread.sleep(260); c.close(); }catch(Exception ex){ try{ Toolkit.getDefaultToolkit().beep(); }catch(Exception ignored){}}}).start(); }catch(Exception ignored){} }
         @Override protected void paintComponent(Graphics g){
             super.paintComponent(g); Graphics2D g2=(Graphics2D)g; g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
             g2.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
