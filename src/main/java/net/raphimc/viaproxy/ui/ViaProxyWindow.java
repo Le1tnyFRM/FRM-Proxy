@@ -45,6 +45,10 @@ public class ViaProxyWindow extends JFrame {
     private void setLookAndFeel() {
         try {
             FlatDarkLaf.setup();
+            UIManager.put("Panel.background", Color.BLACK);
+            UIManager.put("TabbedPane.background", Color.BLACK);
+            UIManager.put("TabbedPane.contentAreaColor", Color.BLACK);
+            UIManager.put("Frame.background", Color.BLACK);
             UIManager.put("TextComponent.arc", 14);
             UIManager.put("Button.arc", 14);
             UIManager.put("Component.arc", 14);
@@ -54,7 +58,7 @@ public class ViaProxyWindow extends JFrame {
             UIManager.put("Component.focusWidth", 1);
             UIManager.put("TabbedPane.tabsOverlapBorder", true);
             UIManager.put("ScrollBar.width", 10);
-            UIManager.put("Component.accentColor", new Color(70,130,255));
+            UIManager.put("Component.accentColor", new Color(255,215,0));
         } catch (Throwable t) { t.printStackTrace(); }
     }
     private void initWindow() {
