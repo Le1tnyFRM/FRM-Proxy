@@ -42,9 +42,9 @@ public class SplashScreen extends JFrame {
             timer=new Timer(16, e->{
                 t+=0.016f;
                 ProgressPanel pp=getProgressPanel();
-                float prog=pp!=null?pp.progress:fill;
+                float prog=pp!=null?pp.progress:0;
                 if(phase==0){ if(t>0.35f){ phase=1; t=0; } }
-                else if(phase==1){ fill=prog; if(fill>=0.999f){ fill=1; phase=2; t=0; } }
+                else if(phase==1){ fill=Math.min(1, Math.max(prog, t/1.2f)); if(fill>=0.999f || (prog>=0.99f && t>0.6f)){ fill=1; phase=2; t=0; } if(t>4f){ fill=1; phase=2; t=0; } }
                 else if(phase==2){ if(!dingPlayed){ ding(); dingPlayed=true; } if(t>0.30f){ phase=3; t=0; } }
                 else if(phase==3){ float z=Math.min(1,t/0.70f); zoom=1 + easeOutBack(z)*9.0f; if(z>=1){ phase=4; t=0; zoom=10f; } }
                 repaint();

@@ -236,6 +236,8 @@ public class ViaProxy {
 
         if (useUI) {
             progressConsumer.accept("Loading GUI");
+            splashScreen.setProgress(1f);
+            splashScreen.setText("Ready");
             splashScreen.awaitEnter();
             SwingUtilities.invokeAndWait(() -> {
                 try {
