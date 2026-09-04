@@ -1,123 +1,112 @@
-/*
- * This file is part of ViaProxy - https://github.com/RaphiMC/ViaProxy
- * Copyright (C) 2021-2026 RK_01/RaphiMC and contributors
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- */
 package net.raphimc.viaproxy.ui;
 
-import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
-import java.awt.image.BufferedImage;
+import java.awt.geom.Ellipse2D;
 import java.io.IOException;
 
 public class SplashScreen extends JFrame {
-
     private final ProgressPanel progressPanel = new ProgressPanel();
-
+    private final AnimatedSplashPanel splashPanel = new AnimatedSplashPanel();
     public SplashScreen() throws IOException {
         this.setAlwaysOnTop(true);
         this.setUndecorated(true);
-        try {
-            this.setBackground(new Color(0, 0, 0, 0));
-        } catch (UnsupportedOperationException ignored) { // https://github.com/ViaVersion/ViaProxy/issues/562
-        }
+        try { this.setBackground(new Color(0,0,0,0)); } catch (UnsupportedOperationException ignored) {}
         this.setType(Window.Type.UTILITY);
-        this.setSize(300, 235);
+        this.setSize(420, 320);
         this.setLocationRelativeTo(null);
         this.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-        this.init();
-        this.setVisible(true);
+        init();
+        setVisible(true);
+        splashPanel.start();
     }
-
-    private void init() throws IOException {
-        JPanel contentPane = new JPanel();
-        contentPane.setOpaque(false);
-        contentPane.setBackground(new Color(0, 0, 0, 0));
-        contentPane.setLayout(new BorderLayout());
-        contentPane.add(new SplashPanel(), BorderLayout.CENTER);
-        contentPane.add(this.progressPanel, BorderLayout.SOUTH);
-        this.setContentPane(contentPane);
+    private void init() {
+        JPanel c=new JPanel(new BorderLayout()); c.setOpaque(false); c.setBackground(new Color(0,0,0,0));
+        c.add(splashPanel, BorderLayout.CENTER); c.add(progressPanel, BorderLayout.SOUTH);
+        setContentPane(c);
     }
+    public float getProgress(){ return progressPanel.progress; }
+    public void setProgress(float p){ progressPanel.progress=Math.max(0,Math.min(1,p)); progressPanel.reveal = p>0.05; progressPanel.repaint(); }
+    public void setText(String t){ progressPanel.text=t; progressPanel.repaint(); }
 
-    public float getProgress() {
-        return this.progressPanel.progress;
-    }
-
-    public void setProgress(final float progress) {
-        this.progressPanel.progress = Math.max(0, Math.min(1, progress));
-        this.progressPanel.repaint();
-    }
-
-    public void setText(final String text) {
-        this.progressPanel.text = text;
-        this.progressPanel.repaint();
-    }
-
-
-    private static class SplashPanel extends JPanel {
-        public SplashPanel() {
-            this.setOpaque(false);
-            this.setBackground(new Color(0, 0, 0, 0));
+    private static class AnimatedSplashPanel extends JPanel {
+        float arrow1X=-120, arrow2X=600; boolean arrowsDone=false;
+        float splashRadius=0; boolean splashDone=false;
+        float[] letterY=new float[8]; boolean[] landed=new boolean[8];
+        String letters="FRM PROXY"; int nextLetter=0; Timer timer;
+        long startTime;
+        AnimatedSplashPanel(){ setOpaque(false); setBackground(new Color(0,0,0,0)); for(int i=0;i<letterY.length;i++) letterY[i]=-40; }
+        void start(){
+            startTime=System.currentTimeMillis();
+            timer=new Timer(16, e->{
+                long t=System.currentTimeMillis()-startTime;
+                if(!arrowsDone){
+                    arrow1X+=14; arrow2X-=14;
+                    if(arrow1X>180 && arrow2X<220){ arrowsDone=true; }
+                } else if(!splashDone){
+                    splashRadius+=16;
+                    if(splashRadius>220) splashDone=true;
+                } else {
+                    if(nextLetter<letters.length()){
+                        letterY[nextLetter]+=18;
+                        if(letterY[nextLetter]>=0){ landed[nextLetter]=true; letterY[nextLetter]=0; nextLetter++; if(nextLetter<letters.length()) letterY[nextLetter]=-40; }
+                    }
+                }
+                repaint();
+                if(splashDone && nextLetter>=letters.length()) timer.stop();
+            }); timer.start();
         }
-
-        @Override
-        protected void paintComponent(final Graphics g) {
+        @Override protected void paintComponent(Graphics g){
             super.paintComponent(g);
-            g.setColor(Color.WHITE);
-            g.setFont(new Font("Arial", Font.BOLD, 30));
-            FontMetrics metrics = g.getFontMetrics();
-            String text = "FRM Proxy";
-            int textWidth = metrics.stringWidth(text);
-            g.drawString(text, (this.getWidth() - textWidth) / 2, this.getHeight() / 2);
-        }
-    }
-
-    private static class ProgressPanel extends JPanel {
-        private float progress = 0;
-        private String text = "";
-
-        public ProgressPanel() {
-            this.setOpaque(false);
-            this.setBackground(new Color(0, 0, 0, 0));
-            this.setPreferredSize(new Dimension(this.getWidth(), 30));
-        }
-
-        @Override
-        protected void paintComponent(Graphics g) {
-            if (g instanceof Graphics2D g2d) {
-                g2d.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
-                g2d.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
+            Graphics2D g2=(Graphics2D)g; g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+            int cx=getWidth()/2, cy=getHeight()/2 - 10;
+            if(!arrowsDone){
+                g2.setColor(new Color(2,188,216)); g2.setStroke(new BasicStroke(6,BasicStroke.CAP_ROUND,BasicStroke.JOIN_ROUND));
+                Polygon a1=new Polygon(new int[]{(int)arrow1X,(int)arrow1X+40,(int)arrow1X+40}, new int[]{cy-18,cy,cy+18},3);
+                g2.fill(a1); g2.drawLine((int)arrow1X-40, cy, (int)arrow1X+10, cy);
+                Polygon a2=new Polygon(new int[]{(int)arrow2X,(int)arrow2X-40,(int)arrow2X-40}, new int[]{cy-18,cy,cy+18},3);
+                g2.fill(a2); g2.drawLine((int)arrow2X+40, cy, (int)arrow2X-10, cy);
             }
-
-            g.setColor(Color.WHITE);
-            g.fillRect(0, 5, this.getWidth(), this.getHeight() - 5);
-            g.setColor(new Color(0, 69, 104));
-            g.fillRect(2, 7, this.getWidth() - 4, this.getHeight() - 9);
-
-            g.setColor(new Color(2, 188, 216));
-            int progressWidth = this.getWidth() - 4;
-            progressWidth = (int) (progressWidth * this.progress);
-            g.fillRect(2, 7, progressWidth, this.getHeight() - 9);
-
-            g.setColor(Color.WHITE);
-            g.setFont(g.getFont().deriveFont(15F));
-            FontMetrics metrics = g.getFontMetrics();
-            int textWidth = metrics.stringWidth(this.text);
-            g.drawString(this.text, (this.getWidth() - textWidth) / 2, (this.getHeight() - metrics.getHeight()) / 2 + metrics.getAscent() + metrics.getDescent() / 2);
+            if(arrowsDone){
+                float alpha = Math.min(1f, splashRadius/180f);
+                g2.setColor(new Color(0,0,0,(int)(alpha*210)));
+                Ellipse2D e=new Ellipse2D.Float(cx - splashRadius/2, cy - splashRadius/2, splashRadius, splashRadius);
+                g2.fill(e);
+                if(splashDone){
+                    g2.setColor(Color.WHITE); g2.setFont(new Font("Arial", Font.BOLD, 36));
+                    FontMetrics fm=g2.getFontMetrics(); String txt="FRM PROXY";
+                    int totalW=fm.stringWidth(txt); int x=cx - totalW/2; int y=cy+8;
+                    for(int i=0;i<txt.length();i++){
+                        char ch=txt.charAt(i); String s=String.valueOf(ch);
+                        int cw=fm.stringWidth(s);
+                        int ly=(int)letterY[i];
+                        if(ch==' ') { x+=cw; continue; }
+                        // shadow
+                        g2.setColor(new Color(0,0,0,120)); g2.drawString(s, x+2, y+ly+2);
+                        g2.setColor(Color.WHITE); g2.drawString(s, x, y+ly);
+                        x+=cw;
+                    }
+                }
+            }
         }
     }
-
+    private static class ProgressPanel extends JPanel {
+        float progress=0; String text=""; boolean reveal=false;
+        ProgressPanel(){ setOpaque(false); setBackground(new Color(0,0,0,0)); setPreferredSize(new Dimension(getWidth(),30)); }
+        @Override protected void paintComponent(Graphics g){
+            if(g instanceof Graphics2D g2d){ g2d.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON); }
+            int w=getWidth(), h=getHeight();
+            // slide-in from left when reveal
+            int barW = reveal ? w : 0;
+            if(reveal){
+                long t=System.currentTimeMillis()%1200; float slide=Math.min(1f, progress*3);
+                barW=(int)(w*slide);
+            }
+            g.setColor(Color.WHITE); g.fillRect(0,5,w,h-5);
+            g.setColor(new Color(0,69,104)); g.fillRect(2,7,w-4,h-9);
+            g.setColor(new Color(2,188,216)); int pw=(int)((w-4)*progress); g.fillRect(2,7,pw,h-9);
+            g.setColor(Color.WHITE); g.setFont(g.getFont().deriveFont(13f)); FontMetrics fm=g.getFontMetrics();
+            int tw=fm.stringWidth(text); g.drawString(text,(w-tw)/2,(h - fm.getHeight())/2 + fm.getAscent()+4);
+        }
+    }
 }
