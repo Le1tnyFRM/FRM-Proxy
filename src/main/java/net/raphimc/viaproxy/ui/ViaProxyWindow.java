@@ -21,8 +21,8 @@ import java.util.List;
 
 public class ViaProxyWindow extends JFrame {
     public final LambdaManager eventManager = LambdaManager.threadSafe(new LambdaMetaFactoryGenerator(JavaBypass.TRUSTED_LOOKUP));
-    public static final int BORDER_PADDING = 14;
-    public static final int BODY_BLOCK_PADDING = 12;
+    public static final int BORDER_PADDING = 10;
+    public static final int BODY_BLOCK_PADDING = 10;
     public final JTabbedPane contentPane = new JTabbedPane();
     private final List<UITab> tabs = new ArrayList<>();
     public final GeneralTab generalTab = new GeneralTab(this);
@@ -45,31 +45,10 @@ public class ViaProxyWindow extends JFrame {
     private void setLookAndFeel() {
         try {
             FlatDarkLaf.setup();
-            Color bg=new Color(18,18,20);
-            Color tabBg=new Color(24,24,28);
-            UIManager.put("Panel.background", bg);
-            UIManager.put("TabbedPane.background", bg);
-            UIManager.put("TabbedPane.contentAreaColor", bg);
-            UIManager.put("TabbedPane.tabAreaBackground", new Color(14,14,16));
-            UIManager.put("TabbedPane.underlineColor", new Color(255,215,0));
-            UIManager.put("TabbedPane.hoverColor", new Color(36,36,42));
-            UIManager.put("TabbedPane.selectedBackground", tabBg);
-            UIManager.put("TabbedPane.focusColor", new Color(255,215,0));
-            UIManager.put("TabbedPane.inactiveUnderlineColor", new Color(60,60,70));
-            UIManager.put("Frame.background", bg);
-            UIManager.put("RootPane.background", bg);
-            UIManager.put("Viewport.background", bg);
-            UIManager.put("ScrollPane.background", bg);
-            UIManager.put("TextComponent.arc", 14);
-            UIManager.put("Button.arc", 14);
-            UIManager.put("Component.arc", 14);
-            UIManager.put("TabbedPane.tabHeight", 34);
-            UIManager.put("TabbedPane.tabInsets", new Insets(6,16,6,16));
-            UIManager.put("TabbedPane.showTabSeparators", true);
-            UIManager.put("Component.focusWidth", 1);
-            UIManager.put("TabbedPane.tabsOverlapBorder", true);
-            UIManager.put("ScrollBar.width", 10);
-            UIManager.put("Component.accentColor", new Color(255,215,0));
+            UIManager.put("Panel.background", new Color(30, 30, 30));
+            UIManager.put("TabbedPane.contentAreaColor", new Color(30, 30, 30));
+            UIManager.getLookAndFeelDefaults().put("TextComponent.arc", 5);
+            UIManager.getLookAndFeelDefaults().put("Button.arc", 5);
         } catch (Throwable t) { t.printStackTrace(); }
     }
     private void initWindow() {
@@ -82,12 +61,10 @@ public class ViaProxyWindow extends JFrame {
                 ViaProxy.getSaveManager().save();
             }
         });
-        this.setSize(620, 460);
-        this.setMinimumSize(new Dimension(560, 420));
+        this.setSize(500, 380);
+        this.setMinimumSize(this.getSize());
         this.setLocationRelativeTo(null);
-        this.contentPane.setFont(this.contentPane.getFont().deriveFont(Font.BOLD, 12f));
         this.setContentPane(this.contentPane);
-        this.getRootPane().setBorder(BorderFactory.createEmptyBorder(2,2,2,2));
     }
     private void initTabs() {
         RStream.of(this).fields().filter(field -> UITab.class.isAssignableFrom(field.type())).forEach(field -> {

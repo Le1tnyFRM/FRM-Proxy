@@ -239,17 +239,30 @@ public class ViaProxy {
             splashScreen.setProgress(1f);
             splashScreen.setText("Ready");
             splashScreen.awaitEnter();
-            Rectangle splashBounds = splashScreen.getBounds();
             SwingUtilities.invokeAndWait(() -> {
                 try {
-                    foregroundWindow = viaProxyWindow = new ViaProxyWindow();
-                    viaProxyWindow.setBounds(splashBounds);
-                    viaProxyWindow.setLocation(splashBounds.getLocation());
-                    viaProxyWindow.setSize(620,460);
-                    viaProxyWindow.setLocationRelativeTo(null);
-                    if(splashBounds.x!=0 || splashBounds.y!=0) viaProxyWindow.setLocation(splashBounds.x + (splashBounds.width-620)/2, splashBounds.y + (splashBounds.height-380)/2);
+                    ViaProxyWindow tmp = new ViaProxyWindow();
+                    tmp.setVisible(false);
+                    // reuse SAME window (splash) - no new window popup
+                    splashScreen.getContentPane().removeAll();
+                    splashScreen.setContentPane(tmp.contentPane);
+                    splashScreen.setTitle(tmp.getTitle());
+                    // keep ViaProxyWindow's logic but UI lives in splash frame
+                    viaProxyWindow = tmp;
+                    foregroundWindow = splashScreen;
+                    splashScreen.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                    splashScreen.addWindowListener(new java.awt.event.WindowAdapter(){
+                        public void windowClosing(java.awt.event.WindowEvent e){
+                            tmp.eventManager.call(new net.raphimc.viaproxy.ui.events.UICloseEvent());
+                            ViaProxy.getConfig().save(); ViaProxy.getSaveManager().save();
+                        }
+                    });
+                    // transfer tabs registration to splash frame already done via tmp
+                    splashScreen.revalidate();
+                    splashScreen.repaint();
+                    // dispose hidden tmp frame (its content now in splash)
+                    tmp.dispose();
                     progressConsumer.accept("Done");
-                    splashScreen.dispose();
                 } catch (Throwable e) {
                     Logger.LOGGER.fatal("Failed to initialize UI", e);
                     System.exit(1);
