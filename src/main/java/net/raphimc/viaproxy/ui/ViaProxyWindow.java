@@ -95,20 +95,20 @@ public class ViaProxyWindow extends JFrame {
         this.contentPane.setFont(this.contentPane.getFont().deriveFont(Font.BOLD, 12f));
         this.contentPane.setBackground(new Color(48,48,48));
         this.contentPane.setOpaque(true);
-        JPanel root=new JPanel(new BorderLayout()); root.setBackground(new Color(48,48,48)); root.setBorder(BorderFactory.createLineBorder(new Color(60,60,60),1));
-        JPanel bar=new JPanel(new BorderLayout()); bar.setBackground(new Color(58,58,58)); bar.setPreferredSize(new Dimension(0,30));
-        JLabel title=new JLabel("  FRM Proxy v" + ViaProxy.VERSION); title.setForeground(Color.WHITE); title.setFont(title.getFont().deriveFont(Font.BOLD,12f));
-        JButton close=new JButton("X"); close.setFocusPainted(false); close.setBorderPainted(false); close.setContentAreaFilled(false); close.setForeground(Color.WHITE); close.setFont(close.getFont().deriveFont(Font.BOLD,14f)); close.setPreferredSize(new Dimension(44,30));
-        close.addMouseListener(new java.awt.event.MouseAdapter(){ public void mouseEntered(java.awt.event.MouseEvent e){ close.setBackground(new Color(220,50,50)); close.setContentAreaFilled(true); } public void mouseExited(java.awt.event.MouseEvent e){ close.setContentAreaFilled(false); }});
+        JPanel trailing=new JPanel(new FlowLayout(FlowLayout.RIGHT,0,0)); trailing.setBackground(new Color(48,48,48)); trailing.setOpaque(true);
+        JButton min=new JButton("—"); min.setFocusPainted(false); min.setBorderPainted(false); min.setContentAreaFilled(false); min.setForeground(Color.WHITE); min.setFont(min.getFont().deriveFont(Font.BOLD,12f)); min.setPreferredSize(new Dimension(36,34));
+        min.addMouseListener(new java.awt.event.MouseAdapter(){ public void mouseEntered(java.awt.event.MouseEvent e){ min.setBackground(new Color(70,70,70)); min.setContentAreaFilled(true);} public void mouseExited(java.awt.event.MouseEvent e){ min.setContentAreaFilled(false);} });
+        min.addActionListener(e-> setState(JFrame.ICONIFIED));
+        JButton close=new JButton("X"); close.setFocusPainted(false); close.setBorderPainted(false); close.setContentAreaFilled(false); close.setForeground(Color.WHITE); close.setFont(close.getFont().deriveFont(Font.BOLD,12f)); close.setPreferredSize(new Dimension(36,34));
+        close.addMouseListener(new java.awt.event.MouseAdapter(){ public void mouseEntered(java.awt.event.MouseEvent e){ close.setBackground(new Color(220,50,50)); close.setContentAreaFilled(true);} public void mouseExited(java.awt.event.MouseEvent e){ close.setContentAreaFilled(false);} });
         close.addActionListener(e-> dispatchEvent(new WindowEvent(this, WindowEvent.WINDOW_CLOSING)));
-        bar.add(title, BorderLayout.WEST); bar.add(close, BorderLayout.EAST);
+        trailing.add(min); trailing.add(close);
+        this.contentPane.putClientProperty("JTabbedPane.trailingComponent", trailing);
+        this.setContentPane(this.contentPane);
+        this.getRootPane().setBorder(BorderFactory.createLineBorder(new Color(60,60,60),1));
         final Point[] drag=new Point[1];
-        bar.addMouseListener(new java.awt.event.MouseAdapter(){ public void mousePressed(java.awt.event.MouseEvent e){ drag[0]=e.getPoint(); }});
-        bar.addMouseMotionListener(new java.awt.event.MouseMotionAdapter(){ public void mouseDragged(java.awt.event.MouseEvent e){ Point p=e.getLocationOnScreen(); setLocation(p.x - drag[0].x, p.y - drag[0].y); }});
-        title.addMouseListener(new java.awt.event.MouseAdapter(){ public void mousePressed(java.awt.event.MouseEvent e){ drag[0]=SwingUtilities.convertPoint(title, e.getPoint(), bar); }});
-        title.addMouseMotionListener(new java.awt.event.MouseMotionAdapter(){ public void mouseDragged(java.awt.event.MouseEvent e){ Point p=e.getLocationOnScreen(); setLocation(p.x - drag[0].x, p.y - drag[0].y); }});
-        root.add(bar, BorderLayout.NORTH); root.add(this.contentPane, BorderLayout.CENTER);
-        this.setContentPane(root);
+        this.contentPane.addMouseListener(new java.awt.event.MouseAdapter(){ public void mousePressed(java.awt.event.MouseEvent e){ if(e.getY()<34) drag[0]=e.getPoint(); }});
+        this.contentPane.addMouseMotionListener(new java.awt.event.MouseMotionAdapter(){ public void mouseDragged(java.awt.event.MouseEvent e){ if(drag[0]!=null){ Point p=e.getLocationOnScreen(); setLocation(p.x - drag[0].x, p.y - drag[0].y); }}});
     }
     private void initTabs() {
         RStream.of(this).fields().filter(field -> UITab.class.isAssignableFrom(field.type())).forEach(field -> {
