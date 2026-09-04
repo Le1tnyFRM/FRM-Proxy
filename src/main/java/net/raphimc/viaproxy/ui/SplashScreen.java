@@ -41,68 +41,57 @@ public class SplashScreen extends JFrame {
         void start(){
             timer=new Timer(16, e->{
                 t+=0.016f;
-                if(phase==0){ if(t>0.45f){ phase=1; t=0; } }
-                else if(phase==1){ fill=Math.min(1, t/1.6f); if(fill>=1){ phase=2; t=0; } }
-                else if(phase==2){ if(!dingPlayed){ ding(); dingPlayed=true; } if(t>0.35f){ phase=3; t=0; } }
-                else if(phase==3){ float z=Math.min(1,t/0.55f); zoom=1 + easeOutBack(z)*0.22f; if(z>=1){ phase=4; t=0; zoom=1.22f; } }
+                ProgressPanel pp=getProgressPanel();
+                float prog=pp!=null?pp.progress:fill;
+                if(phase==0){ if(t>0.35f){ phase=1; t=0; } }
+                else if(phase==1){ fill=prog; if(fill>=0.999f){ fill=1; phase=2; t=0; } }
+                else if(phase==2){ if(!dingPlayed){ ding(); dingPlayed=true; } if(t>0.30f){ phase=3; t=0; } }
+                else if(phase==3){ float z=Math.min(1,t/0.70f); zoom=1 + easeOutBack(z)*9.0f; if(z>=1){ phase=4; t=0; zoom=10f; } }
                 repaint();
             }); timer.start();
         }
+        ProgressPanel getProgressPanel(){ Container p=getParent(); while(p!=null){ if(p instanceof SplashScreen) return ((SplashScreen)p).progressPanel; p=p.getParent(); } return null; }
         float easeOutBack(float x){ float c1=1.70158f, c3=c1+1; return 1 + c3*(float)Math.pow(x-1,3) + c1*(float)Math.pow(x-1,2); }
         void ding(){ try{ Toolkit.getDefaultToolkit().beep(); new Thread(()->{ try{ float sr=44100; byte[] buf=new byte[(int)(sr*0.18)]; for(int i=0;i<buf.length;i++){ double ang=2*Math.PI*880*Math.exp(-i/(sr*0.12))*i/sr; double env=Math.exp(-i/(sr*0.09)); buf[i]=(byte)(Math.sin(ang)*env*110); } AudioFormat fmt=new AudioFormat(sr,8,1,true,false); Clip c=AudioSystem.getClip(); c.open(fmt,buf,0,buf.length); c.start(); Thread.sleep(220); c.close(); }catch(Exception ignored){}}).start(); }catch(Exception ignored){} }
         @Override protected void paintComponent(Graphics g){
             super.paintComponent(g); Graphics2D g2=(Graphics2D)g; g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
             g2.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
             int w=getWidth(), h=getHeight();
-            float popup = phase==0 ? Math.min(1, t/0.45f) : 1f;
-            float popScale = 0.82f + (float)(1-Math.pow(1-popup,3))*0.18f;
+            if(phase==4){
+                g2.setColor(Color.BLACK); g2.fillRect(0,0,w,h);
+                g2.setFont(new Font("Arial", Font.BOLD, 22)); FontMetrics fm2=g2.getFontMetrics();
+                String enter="> enter <"; int ew=fm2.stringWidth(enter); int ex=w/2 - ew/2, ey=h/2;
+                enterBounds.setBounds(ex-18, ey-22, ew+36, 28);
+                g2.setColor(new Color(255,215,0)); g2.setStroke(new BasicStroke(1.2f)); g2.drawRoundRect(ex-14, ey-18, ew+28, 24,12,12);
+                g2.setColor(new Color(255,215,0,30)); g2.fillRoundRect(ex-14, ey-18, ew+28, 24,12,12);
+                g2.setColor(new Color(255,215,0)); g2.drawString(enter, ex, ey);
+                return;
+            }
+            float popup = phase==0 ? Math.min(1, t/0.35f) : 1f;
+            float popScale = 0.85f + (float)(1-Math.pow(1-popup,3))*0.15f;
             float popAlpha = Math.min(1, popup*2);
             Graphics2D gg=(Graphics2D)g2.create();
             gg.translate(w/2, h/2 - 6); gg.scale(popScale, popScale); gg.translate(-w/2, -(h/2 -6));
             gg.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, popAlpha));
-            // bg card
-            gg.setColor(new Color(10,10,12)); gg.fillRoundRect(14,14,w-28,h-56,22,22);
-            gg.setColor(new Color(255,255,255,14)); gg.setStroke(new BasicStroke(1)); gg.drawRoundRect(14,14,w-28,h-56,22,22);
-            // FRM PROXY fluid fill
-            String txt="FRM PROXY"; gg.setFont(new Font("Arial", Font.BOLD, 44)); FontMetrics fm=gg.getFontMetrics();
+            // bg card - zoom the black part
+            float zScale = phase==3? zoom : 1f;
+            Graphics2D cardG=gg;
+            if(phase==3){
+                cardG=(Graphics2D)gg.create();
+                cardG.translate(w/2, h/2); cardG.scale(zScale,zScale); cardG.translate(-w/2, -h/2);
+            }
+            cardG.setColor(new Color(10,10,12)); cardG.fillRoundRect(14,14,w-28,h-56,22,22);
+            cardG.setColor(new Color(255,255,255,14)); cardG.setStroke(new BasicStroke(1)); cardG.drawRoundRect(14,14,w-28,h-56,22,22);
+            String txt="FRM PROXY"; cardG.setFont(new Font("Arial", Font.BOLD, 44)); FontMetrics fm=cardG.getFontMetrics();
             int totalW=fm.stringWidth(txt); int tx=w/2 - totalW/2, ty=h/2 + 8;
-            // apply zoom around center
-            if(phase>=3){
-                Graphics2D gz=(Graphics2D)gg.create();
-                gz.translate(w/2, h/2); gz.scale(zoom,zoom); gz.translate(-w/2, -h/2);
-                // draw again with zoom for enter phase
-                drawFluidText(gz, txt, tx, ty, fm, fill);
-                gz.dispose();
-            } else {
-                drawFluidText(gg, txt, tx, ty, fm, phase==1?fill:(phase>=2?1:0));
-            }
+            drawFluidText(cardG, txt, tx, ty, fm, phase==1?fill:(phase>=2?1:0));
+            if(phase==3) cardG.dispose();
             gg.dispose();
-            // enter
-            if(phase==4){
-                g2.setFont(new Font("Arial", Font.BOLD, 20)); FontMetrics fm2=g2.getFontMetrics();
-                String enter="> enter <"; int ew=fm2.stringWidth(enter); int ex=w/2 - ew/2, ey=h/2 + 62;
-                enterBounds.setBounds(ex-18, ey-22, ew+36, 28);
-                // glow
-                g2.setColor(new Color(255,215,0,30)); g2.fillRoundRect(ex-14, ey-18, ew+28, 24,12,12);
-                g2.setColor(new Color(255,215,0)); g2.setStroke(new BasicStroke(1.2f)); g2.drawRoundRect(ex-14, ey-18, ew+28, 24,12,12);
-                g2.drawString(enter, ex, ey);
-                // hint
-                g2.setColor(new Color(255,255,255,110)); g2.setFont(new Font("Arial", Font.PLAIN, 10)); String hint="click to continue";
-                FontMetrics fm3=g2.getFontMetrics(); g2.drawString(hint, w/2 - fm3.stringWidth(hint)/2, ey+18);
-            }
         }
         void drawFluidText(Graphics2D g, String txt, int x, int y, FontMetrics fm, float fill){
-            // white base
             g.setColor(Color.WHITE);
             for(int i=0;i<txt.length();i++){ String s=String.valueOf(txt.charAt(i)); if(s.equals(" ")) { x+=fm.stringWidth(s); continue; } g.drawString(s,x,y); x+=fm.stringWidth(s); }
             if(fill<=0) return;
-            // yellow fluid fill clip from bottom
-            x=g.getFontMetrics().getFont().getSize(); // reset x
-            // recompute x start
-            int startX=g.getClipBounds()!=null?0:0;
-            // we need original x
-            int ox=0; { FontMetrics f2=g.getFontMetrics(); int tw=f2.stringWidth(txt); ox=g.getClipBounds()==null? (getWidth()/2 - tw/2) : 0; }
-            // simpler: use shape clip for each char
             int cx=0; { FontMetrics f2=g.getFontMetrics(); int tw=f2.stringWidth(txt); cx=getWidth()/2 - tw/2; }
             int curX=cx;
             for(int i=0;i<txt.length();i++){
@@ -114,21 +103,7 @@ public class SplashScreen extends JFrame {
                     int clipY=y - fm.getAscent() + (charH - fillH);
                     g.setClip(new Rectangle(curX, clipY, cw, fillH));
                     g.setColor(new Color(255,215,0));
-                    // wavy top line
                     g.drawString(s,curX,y);
-                    // wave highlight
-                    g.setColor(new Color(255,235,120));
-                    if(fill>0.05f && fill<0.98f){
-                        int waveY=clipY;
-                        g.setStroke(new BasicStroke(1.2f));
-                        Path2D wave=new Path2D.Float();
-                        wave.moveTo(curX, waveY);
-                        for(int px=0;px<cw;px++){
-                            float wy=waveY + (float)Math.sin((px+System.currentTimeMillis()*0.01)*0.35)*1.2f;
-                            if(px==0) wave.moveTo(curX+px, wy); else wave.lineTo(curX+px, wy);
-                        }
-                        g.draw(wave);
-                    }
                     g.setClip(old);
                 }
                 curX+=cw;
