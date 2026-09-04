@@ -87,15 +87,24 @@ public class SplashScreen extends JFrame {
                 float a = Math.min(1f, splash/160f);
                 g2.setColor(new Color(0,0,0,(int)(255*a)));
                 Path2D p=new Path2D.Float();
-                int points=24; float r=splash/2 *0.92f;
-                for(int i=0;i<=points;i++){
+                int points=28; float r=splash/2 *0.90f;
+                float[] xs=new float[points], ys=new float[points];
+                for(int i=0;i<points;i++){
                     double ang=i*2*Math.PI/points;
-                    float spike = (i%3==0) ? 0.35f : (i%5==0 ? 0.25f : 0.12f);
-                    float rad = r * (0.82f + spike * (float)Math.sin(i*2.9) + rnd.nextFloat()*0.08f);
-                    if(i==2 || i==7 || i==11 || i==17) rad += 18 + rnd.nextFloat()*12;
-                    float x=cx + (float)Math.cos(ang)*rad;
-                    float y=cy + (float)Math.sin(ang)*rad*0.78f;
-                    if(i==0) p.moveTo(x,y); else p.lineTo(x,y);
+                    float spike = (i%4==0) ? 0.42f : (i%6==1 ? 0.28f : 0.10f);
+                    float rad = r * (0.80f + spike * (float)Math.sin(i*1.9 + i*0.3) + rnd.nextFloat()*0.09f);
+                    if(i==3 || i==9 || i==15 || i==21) rad += 22 + rnd.nextFloat()*10;
+                    if(i==6 || i==18) rad += 14;
+                    xs[i]=cx + (float)Math.cos(ang)*rad;
+                    ys[i]=cy + (float)Math.sin(ang)*rad*0.76f;
+                }
+                p.moveTo(xs[0], ys[0]);
+                for(int i=0;i<points;i++){
+                    int j=(i+1)%points;
+                    float mx=(xs[i]+xs[j])/2, my=(ys[i]+ys[j])/2;
+                    float cx1=xs[i] + (mx - xs[i])*0.5f + (rnd.nextFloat()-0.5f)*6;
+                    float cy1=ys[i] + (my - ys[i])*0.5f + (rnd.nextFloat()-0.5f)*6;
+                    p.quadTo(cx1, cy1, mx, my);
                 }
                 p.closePath(); g2.fill(p);
                 g2.setColor(new Color(0,0,0,(int)(255*a)));
