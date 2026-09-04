@@ -44,14 +44,15 @@ public class SplashScreen extends JFrame {
                     arrow1X+=10; arrow2X-=10;
                     if(arrow1X>170 && arrow2X<310) arrowsDone=true;
                 } else if(!splashDone){
-                    splash+=14;
-                    if(splash>260) { splashDone=true; splash=260; }
+                    splash+=10;
+                    if(splash>280) { splashDone=true; splash=280; }
                     if(splashDone){
+                        Random fr=new Random(99);
                         for(int i=0;i<dropX.length;i++){
-                            double ang=i*0.55 + rnd.nextFloat()*0.15;
-                            double dist=splash*0.52 + rnd.nextFloat()*18;
+                            double ang=i*0.55 + fr.nextFloat()*0.12;
+                            double dist=splash*0.54 + fr.nextFloat()*12;
                             dropX[i]=(float)(Math.cos(ang)*dist);
-                            dropY[i]=(float)(Math.sin(ang)*dist*0.70);
+                            dropY[i]=(float)(Math.sin(ang)*dist*0.68);
                         }
                         cachedPath=null;
                     }
@@ -106,7 +107,7 @@ public class SplashScreen extends JFrame {
                 if(splashDone){
                     g2.setFont(new Font("Arial", Font.BOLD, 32));
                     FontMetrics fm=g2.getFontMetrics(); int totalW=fm.stringWidth(letters); int x=cx - totalW/2; int y=cy+11;
-                    float maxW=splash*0.68f;
+                    float maxW=splash*0.58f;
                     if(totalW > maxW){
                         float scale=maxW/totalW;
                         g2.setFont(new Font("Arial", Font.BOLD, (int)(32*scale)));
@@ -126,14 +127,14 @@ public class SplashScreen extends JFrame {
         }
         private Path2D buildSplashPath(int cx,int cy,float splash){
             Path2D p=new Path2D.Float();
-            int points=28; float r=splash/2 *0.98f;
+            int points=28; float r=splash/2 *1.08f;
             float[] xs=new float[points], ys=new float[points];
             Random r2=new Random(42);
             for(int i=0;i<points;i++){
                 double ang=i*2*Math.PI/points;
                 float spike = (i%4==0) ? 0.30f : (i%6==1 ? 0.18f : 0.06f);
-                float rad = r * (0.86f + spike * (float)Math.sin(i*2.2) + r2.nextFloat()*0.04f);
-                if(i==3 || i==10 || i==16 || i==22) rad += 16 + r2.nextFloat()*8;
+                float rad = r * (0.86f + spike * (float)Math.sin(i*2.2) + r2.nextFloat()*0.02f);
+                if(i==3 || i==10 || i==16 || i==22) rad += 14 + r2.nextFloat()*6;
                 xs[i]=cx + (float)Math.cos(ang)*rad;
                 ys[i]=cy + (float)Math.sin(ang)*rad*0.74f;
             }
@@ -141,8 +142,8 @@ public class SplashScreen extends JFrame {
             for(int i=0;i<points;i++){
                 int j=(i+1)%points;
                 float mx=(xs[i]+xs[j])/2, my=(ys[i]+ys[j])/2;
-                float cxi = (xs[i]+mx)/2 + (r2.nextFloat()-0.5f)*2;
-                float cyi = (ys[i]+my)/2 + (r2.nextFloat()-0.5f)*2;
+                float cxi = (xs[i]+mx)/2;
+                float cyi = (ys[i]+my)/2;
                 p.quadTo(cxi, cyi, mx, my);
             }
             p.closePath(); return p;
