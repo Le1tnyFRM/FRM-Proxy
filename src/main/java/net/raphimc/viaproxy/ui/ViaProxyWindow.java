@@ -45,19 +45,21 @@ public class ViaProxyWindow extends JFrame {
     private void setLookAndFeel() {
         try {
             FlatDarkLaf.setup();
-            UIManager.put("Panel.background", Color.BLACK);
-            UIManager.put("TabbedPane.background", Color.BLACK);
-            UIManager.put("TabbedPane.contentAreaColor", Color.BLACK);
-            UIManager.put("TabbedPane.tabAreaBackground", Color.BLACK);
-            UIManager.put("TabbedPane.underlineColor", Color.BLACK);
-            UIManager.put("TabbedPane.hoverColor", new Color(20,20,20));
-            UIManager.put("TabbedPane.selectedBackground", Color.BLACK);
-            UIManager.put("TabbedPane.focusColor", Color.BLACK);
-            UIManager.put("TabbedPane.inactiveUnderlineColor", Color.BLACK);
-            UIManager.put("Frame.background", Color.BLACK);
-            UIManager.put("RootPane.background", Color.BLACK);
-            UIManager.put("Viewport.background", Color.BLACK);
-            UIManager.put("ScrollPane.background", Color.BLACK);
+            Color bg=new Color(18,18,20);
+            Color tabBg=new Color(24,24,28);
+            UIManager.put("Panel.background", bg);
+            UIManager.put("TabbedPane.background", bg);
+            UIManager.put("TabbedPane.contentAreaColor", bg);
+            UIManager.put("TabbedPane.tabAreaBackground", new Color(14,14,16));
+            UIManager.put("TabbedPane.underlineColor", new Color(255,215,0));
+            UIManager.put("TabbedPane.hoverColor", new Color(36,36,42));
+            UIManager.put("TabbedPane.selectedBackground", tabBg);
+            UIManager.put("TabbedPane.focusColor", new Color(255,215,0));
+            UIManager.put("TabbedPane.inactiveUnderlineColor", new Color(60,60,70));
+            UIManager.put("Frame.background", bg);
+            UIManager.put("RootPane.background", bg);
+            UIManager.put("Viewport.background", bg);
+            UIManager.put("ScrollPane.background", bg);
             UIManager.put("TextComponent.arc", 14);
             UIManager.put("Button.arc", 14);
             UIManager.put("Component.arc", 14);

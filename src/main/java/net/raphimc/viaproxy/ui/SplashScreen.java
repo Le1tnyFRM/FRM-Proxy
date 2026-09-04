@@ -44,12 +44,13 @@ public class SplashScreen extends JFrame {
                 ProgressPanel pp=getProgressPanel();
                 float prog=pp!=null?pp.progress:0;
                 if(phase==0){ if(t>0.35f){ phase=1; t=0; } }
-                else if(phase==1){ fill=Math.min(1, Math.max(prog, t/1.2f)); if(fill>=0.999f || (prog>=0.99f && t>0.6f)){ fill=1; phase=2; t=0; } if(t>4f){ fill=1; phase=2; t=0; } }
-                else if(phase==2){ if(!dingPlayed){ ding(); dingPlayed=true; } if(t>0.30f){ phase=3; t=0; } }
-                else if(phase==3){ float z=Math.min(1,t/0.70f); zoom=1 + easeOutBack(z)*9.0f; if(z>=1){ phase=4; t=0; zoom=10f; } }
+                else if(phase==1){ float target=prog; fill+= (target - fill)*0.14f; if(fill>0.99f && prog>=0.99f){ fill=1; phase=2; t=0; } if(fill>0.999f) fill=1; if(t>6f && prog<0.9f){ fill=Math.min(1, fill+0.008f); } }
+                else if(phase==2){ if(!dingPlayed){ ding(); dingPlayed=true; } if(t>0.35f){ phase=3; t=0; } }
+                else if(phase==3){ float z=Math.min(1,t/0.90f); zoom=1 + easeOutCubic(z)*5.0f; if(z>=1){ phase=4; t=0; zoom=6f; } }
                 repaint();
             }); timer.start();
         }
+        float easeOutCubic(float x){ return 1-(float)Math.pow(1-x,3); }
         ProgressPanel getProgressPanel(){ Container p=getParent(); while(p!=null){ if(p instanceof SplashScreen) return ((SplashScreen)p).progressPanel; p=p.getParent(); } return null; }
         float easeOutBack(float x){ float c1=1.70158f, c3=c1+1; return 1 + c3*(float)Math.pow(x-1,3) + c1*(float)Math.pow(x-1,2); }
         void ding(){ try{ Toolkit.getDefaultToolkit().beep(); new Thread(()->{ try{ float sr=44100; byte[] buf=new byte[(int)(sr*0.18)]; for(int i=0;i<buf.length;i++){ double ang=2*Math.PI*880*Math.exp(-i/(sr*0.12))*i/sr; double env=Math.exp(-i/(sr*0.09)); buf[i]=(byte)(Math.sin(ang)*env*110); } AudioFormat fmt=new AudioFormat(sr,8,1,true,false); Clip c=AudioSystem.getClip(); c.open(fmt,buf,0,buf.length); c.start(); Thread.sleep(220); c.close(); }catch(Exception ignored){}}).start(); }catch(Exception ignored){} }
