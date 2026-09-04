@@ -93,7 +93,13 @@ public class ProxyConnection extends NetClient {
 
     @Override
     public void initialize(final TransportType transportType, final Bootstrap bootstrap) {
-        bootstrap.option(ChannelOption.CONNECT_TIMEOUT_MILLIS, ViaProxy.getConfig().getConnectTimeout());
+        int timeout = ViaProxy.getConfig().getConnectTimeout();
+        if (ViaProxy.getConfig().shouldAutoSetup()) timeout = Math.max(timeout, 15000);
+        if (ViaProxy.getConfig().getTargetAddress() != null && ViaProxy.getConfig().getTargetAddress().toString().toLowerCase().contains("6b6t")) timeout = 20000;
+        bootstrap.option(ChannelOption.CONNECT_TIMEOUT_MILLIS, timeout);
+        bootstrap.option(ChannelOption.TCP_NODELAY, true);
+        bootstrap.option(ChannelOption.SO_KEEPALIVE, true);
+        bootstrap.option(ChannelOption.SO_RCVBUF, 128*1024);
         bootstrap.attr(PROXY_CONNECTION_ATTRIBUTE_KEY, this);
         super.initialize(transportType, bootstrap);
     }
