@@ -13,7 +13,7 @@ public class SplashScreen extends JFrame {
     public SplashScreen() throws IOException {
         setAlwaysOnTop(true); setUndecorated(true);
         try { setBackground(new Color(0,0,0,0)); } catch (UnsupportedOperationException ignored) {}
-        setType(Window.Type.UTILITY); setSize(480,360); setLocationRelativeTo(null);
+        setType(Window.Type.UTILITY); setSize(500,380); setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         JPanel c=new JPanel(new BorderLayout()); c.setOpaque(false); c.setBackground(new Color(0,0,0,0));
         c.add(splashPanel, BorderLayout.CENTER); c.add(progressPanel, BorderLayout.SOUTH);
@@ -24,18 +24,19 @@ public class SplashScreen extends JFrame {
     public void setText(String t){ progressPanel.text=t; progressPanel.repaint(); }
 
     private static class AnimatedSplashPanel extends JPanel {
-        float arrow1X=-200, arrow2X=680; boolean arrowsDone=false;
+        float arrow1X=-220, arrow2X=700; boolean arrowsDone=false;
         float splash=0; boolean splashDone=false;
         final String letters="FRM PROXY";
         final float[] letterY=new float[9];
         final float[] letterVy=new float[9];
         int nextLetter=0; Timer timer;
-        final Random rnd=new Random(42);
-        final float[] dropX=new float[22], dropY=new float[22], dropR=new float[22];
+        final Random rnd=new Random(1234);
+        final float[] dropX=new float[18], dropY=new float[18], dropR=new float[18];
+        Path2D cachedPath=null; float cachedSplash=-1;
         AnimatedSplashPanel(){
             setOpaque(false); setBackground(new Color(0,0,0,0));
             for(int i=0;i<letterY.length;i++){ letterY[i]=-90; letterVy[i]=0; }
-            for(int i=0;i<dropX.length;i++){ dropR[i]=2+rnd.nextFloat()*6; }
+            for(int i=0;i<dropX.length;i++){ dropR[i]=3+rnd.nextFloat()*5; }
         }
         void start(){
             timer=new Timer(20, e->{
@@ -44,12 +45,15 @@ public class SplashScreen extends JFrame {
                     if(arrow1X>170 && arrow2X<310) arrowsDone=true;
                 } else if(!splashDone){
                     splash+=14;
-                    if(splash>250) splashDone=true;
-                    for(int i=0;i<dropX.length;i++){
-                        double ang=i*0.48 + rnd.nextFloat()*0.2;
-                        double dist=splash*0.52 + rnd.nextFloat()*28;
-                        dropX[i]=(float)(Math.cos(ang)*dist);
-                        dropY[i]=(float)(Math.sin(ang)*dist*0.72);
+                    if(splash>260) { splashDone=true; splash=260; }
+                    if(splashDone){
+                        for(int i=0;i<dropX.length;i++){
+                            double ang=i*0.55 + rnd.nextFloat()*0.15;
+                            double dist=splash*0.52 + rnd.nextFloat()*18;
+                            dropX[i]=(float)(Math.cos(ang)*dist);
+                            dropY[i]=(float)(Math.sin(ang)*dist*0.70);
+                        }
+                        cachedPath=null;
                     }
                 } else {
                     if(nextLetter < letters.length()){
@@ -85,40 +89,27 @@ public class SplashScreen extends JFrame {
             }
             if(arrowsDone){
                 float a = Math.min(1f, splash/160f);
-                g2.setColor(new Color(0,0,0,(int)(255*a)));
-                Path2D p=new Path2D.Float();
-                int points=28; float r=splash/2 *0.90f;
-                float[] xs=new float[points], ys=new float[points];
-                for(int i=0;i<points;i++){
-                    double ang=i*2*Math.PI/points;
-                    float spike = (i%4==0) ? 0.42f : (i%6==1 ? 0.28f : 0.10f);
-                    float rad = r * (0.80f + spike * (float)Math.sin(i*1.9 + i*0.3) + rnd.nextFloat()*0.09f);
-                    if(i==3 || i==9 || i==15 || i==21) rad += 22 + rnd.nextFloat()*10;
-                    if(i==6 || i==18) rad += 14;
-                    xs[i]=cx + (float)Math.cos(ang)*rad;
-                    ys[i]=cy + (float)Math.sin(ang)*rad*0.76f;
+                if(cachedPath==null || cachedSplash!=splash){
+                    cachedPath=buildSplashPath(cx,cy,splash);
+                    cachedSplash=splash;
                 }
-                p.moveTo(xs[0], ys[0]);
-                for(int i=0;i<points;i++){
-                    int j=(i+1)%points;
-                    float mx=(xs[i]+xs[j])/2, my=(ys[i]+ys[j])/2;
-                    float cx1=xs[i] + (mx - xs[i])*0.5f + (rnd.nextFloat()-0.5f)*6;
-                    float cy1=ys[i] + (my - ys[i])*0.5f + (rnd.nextFloat()-0.5f)*6;
-                    p.quadTo(cx1, cy1, mx, my);
-                }
-                p.closePath(); g2.fill(p);
                 g2.setColor(new Color(0,0,0,(int)(255*a)));
-                for(int i=0;i<dropX.length;i++){
-                    float dx=cx+dropX[i], dy=cy+dropY[i];
-                    Ellipse2D d=new Ellipse2D.Float(dx-dropR[i], dy-dropR[i], dropR[i]*2 + rnd.nextFloat()*3, dropR[i]*2);
-                    g2.fill(d);
+                g2.fill(cachedPath);
+                if(splashDone){
+                    g2.setColor(new Color(0,0,0,(int)(255*a)));
+                    for(int i=0;i<dropX.length;i++){
+                        float dx=cx+dropX[i], dy=cy+dropY[i];
+                        Ellipse2D d=new Ellipse2D.Float(dx-dropR[i], dy-dropR[i], dropR[i]*2, dropR[i]*2);
+                        g2.fill(d);
+                    }
                 }
                 if(splashDone){
-                    g2.setFont(new Font("Arial", Font.BOLD, 34));
+                    g2.setFont(new Font("Arial", Font.BOLD, 32));
                     FontMetrics fm=g2.getFontMetrics(); int totalW=fm.stringWidth(letters); int x=cx - totalW/2; int y=cy+11;
-                    if(totalW > splash*0.82){
-                        float scale=(splash*0.82f)/totalW;
-                        g2.setFont(new Font("Arial", Font.BOLD, (int)(34*scale)));
+                    float maxW=splash*0.68f;
+                    if(totalW > maxW){
+                        float scale=maxW/totalW;
+                        g2.setFont(new Font("Arial", Font.BOLD, (int)(32*scale)));
                         fm=g2.getFontMetrics(); totalW=fm.stringWidth(letters); x=cx - totalW/2;
                     }
                     for(int i=0;i<letters.length();i++){
@@ -132,6 +123,29 @@ public class SplashScreen extends JFrame {
                     }
                 }
             }
+        }
+        private Path2D buildSplashPath(int cx,int cy,float splash){
+            Path2D p=new Path2D.Float();
+            int points=28; float r=splash/2 *0.98f;
+            float[] xs=new float[points], ys=new float[points];
+            Random r2=new Random(42);
+            for(int i=0;i<points;i++){
+                double ang=i*2*Math.PI/points;
+                float spike = (i%4==0) ? 0.30f : (i%6==1 ? 0.18f : 0.06f);
+                float rad = r * (0.86f + spike * (float)Math.sin(i*2.2) + r2.nextFloat()*0.04f);
+                if(i==3 || i==10 || i==16 || i==22) rad += 16 + r2.nextFloat()*8;
+                xs[i]=cx + (float)Math.cos(ang)*rad;
+                ys[i]=cy + (float)Math.sin(ang)*rad*0.74f;
+            }
+            p.moveTo(xs[0], ys[0]);
+            for(int i=0;i<points;i++){
+                int j=(i+1)%points;
+                float mx=(xs[i]+xs[j])/2, my=(ys[i]+ys[j])/2;
+                float cxi = (xs[i]+mx)/2 + (r2.nextFloat()-0.5f)*2;
+                float cyi = (ys[i]+my)/2 + (r2.nextFloat()-0.5f)*2;
+                p.quadTo(cxi, cyi, mx, my);
+            }
+            p.closePath(); return p;
         }
     }
     private static class ProgressPanel extends JPanel {
