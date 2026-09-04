@@ -16,7 +16,7 @@ public class SplashScreen extends JFrame {
         setSize(620,460); setLocationRelativeTo(null);
         setUndecorated(false);
         fluidPanel=new FluidPanel(latch, progressPanel);
-        JPanel c=new JPanel(new BorderLayout()); c.setBackground(new Color(18,18,20));
+        JPanel c=new JPanel(new BorderLayout()); c.setBackground(new Color(48,48,48));
         c.add(fluidPanel, BorderLayout.CENTER); c.add(progressPanel, BorderLayout.SOUTH);
         setContentPane(c); setVisible(true); fluidPanel.start();
     }
@@ -35,7 +35,7 @@ public class SplashScreen extends JFrame {
     private static class FluidPanel extends JPanel {
         final CountDownLatch latch; final ProgressPanel prog;
         Timer timer; float t=0; int phase=0; float fill=0; boolean dingPlayed=false; float fade=1f;
-        FluidPanel(CountDownLatch l, ProgressPanel p){ this.latch=l; this.prog=p; setOpaque(false); setBackground(new Color(18,18,20)); }
+        FluidPanel(CountDownLatch l, ProgressPanel p){ this.latch=l; this.prog=p; setOpaque(false); setBackground(new Color(48,48,48)); }
         void start(){
             timer=new Timer(16, e->{
                 t+=0.016f;
@@ -53,7 +53,7 @@ public class SplashScreen extends JFrame {
             g2.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
             int w=getWidth(), h=getHeight();
             if(phase==3){
-                float f=1-fade; Color bg=new Color(18,18,20);
+                float f=1-fade; Color bg=new Color(48,48,48);
                 g2.setColor(new Color((int)(bg.getRed()*f + bg.getRed()*(1-f)), (int)(bg.getGreen()*f+bg.getGreen()*(1-f)), (int)(bg.getBlue()*f+bg.getBlue()*(1-f)))); g2.fillRect(0,0,w,h);
                 g2.setColor(new Color(255,255,255,(int)(180*fade))); g2.setFont(new Font("Arial", Font.BOLD, 44)); FontMetrics fm=g2.getFontMetrics();
                 String txt="FRM PROXY"; int totalW=fm.stringWidth(txt); int tx=w/2 - totalW/2, ty=h/2+8;
@@ -68,7 +68,7 @@ public class SplashScreen extends JFrame {
             Graphics2D gg=(Graphics2D)g2.create();
             gg.translate(w/2, h/2 -6); gg.scale(popScale, popScale); gg.translate(-w/2, -(h/2-6));
             gg.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, popAlpha));
-            gg.setColor(new Color(18,18,20)); gg.fillRect(0,0,w,h);
+            gg.setColor(new Color(48,48,48)); gg.fillRect(0,0,w,h);
             String txt="FRM PROXY"; gg.setFont(new Font("Arial", Font.BOLD, 44)); FontMetrics fm=gg.getFontMetrics();
             int totalW=fm.stringWidth(txt); int tx=w/2 - totalW/2, ty=h/2+8;
             drawFluid(gg, txt, tx, ty, fm, phase==1?fill:1);
@@ -98,14 +98,14 @@ public class SplashScreen extends JFrame {
     }
     private static class ProgressPanel extends JPanel {
         float progress=0; String text="";
-        ProgressPanel(){ setOpaque(false); setBackground(new Color(18,18,20)); setPreferredSize(new Dimension(getWidth(),34)); }
+        ProgressPanel(){ setOpaque(false); setBackground(new Color(48,48,48)); setPreferredSize(new Dimension(getWidth(),34)); }
         @Override protected void paintComponent(Graphics g){
             Graphics2D g2=(Graphics2D)g; g2.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
             int w=getWidth(), h=getHeight();
             FluidPanel fp=null; Container p=getParent(); while(p!=null){ if(p instanceof SplashScreen) { fp=((SplashScreen)p).fluidPanel; break; } p=p.getParent(); }
             boolean greying = fp!=null && fp.phase==3;
-            Color barBg=new Color(18,18,20);
-            if(greying) barBg=new Color(18,18,20);
+            Color barBg=new Color(48,48,48);
+            if(greying) barBg=new Color(48,48,48);
             g2.setColor(new Color(255,255,255,18)); g2.fillRoundRect(10,10,w-20,h-18,6,6);
             int pw=(int)((w-20)*progress);
             g2.setColor(greying? new Color(110,110,110) : new Color(255,215,0)); g2.fillRoundRect(10,10,pw,h-18,6,6);

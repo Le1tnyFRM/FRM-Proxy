@@ -45,17 +45,22 @@ public class ViaProxyWindow extends JFrame {
     private void setLookAndFeel() {
         try {
             FlatDarkLaf.setup();
-            Color bg=new Color(18,18,20);
-            Color tabBg=new Color(24,24,28);
+            Color bg=new Color(48,48,48);
+            Color tabBg=new Color(48,48,48);
             UIManager.put("Panel.background", bg);
+            UIManager.getLookAndFeelDefaults().put("Panel.background", bg);
             UIManager.put("TabbedPane.background", bg);
+            UIManager.getLookAndFeelDefaults().put("TabbedPane.background", bg);
             UIManager.put("TabbedPane.contentAreaColor", bg);
+            UIManager.getLookAndFeelDefaults().put("TabbedPane.contentAreaColor", bg);
             UIManager.put("TabbedPane.tabAreaBackground", bg);
+            UIManager.getLookAndFeelDefaults().put("TabbedPane.tabAreaBackground", bg);
             UIManager.put("TabbedPane.underlineColor", new Color(255,215,0));
-            UIManager.put("TabbedPane.hoverColor", new Color(36,36,42));
+            UIManager.put("TabbedPane.hoverColor", new Color(64,64,64));
             UIManager.put("TabbedPane.selectedBackground", tabBg);
+            UIManager.getLookAndFeelDefaults().put("TabbedPane.selectedBackground", tabBg);
             UIManager.put("TabbedPane.focusColor", new Color(255,215,0));
-            UIManager.put("TabbedPane.inactiveUnderlineColor", new Color(60,60,70));
+            UIManager.put("TabbedPane.inactiveUnderlineColor", new Color(90,90,90));
             UIManager.put("Frame.background", bg);
             UIManager.put("RootPane.background", bg);
             UIManager.put("Viewport.background", bg);
