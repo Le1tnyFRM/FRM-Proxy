@@ -22,8 +22,5 @@ Tutorial: https://youtu.be/oKGCrDZkbCQ
 ### 6b6t Tips
 Use `Auto Detect (1.7+ servers)` or explicit target, keep compression at 256. If you hit compression kick, restart — threshold now auto-corrects.
 
-### License
-ViaProxy © RK_01/RaphiMC & Lenni0451 under **GPL-3.0**. 
-
 ### Issues & Ideas
 https://github.com/Le1tnyFRM/FRM-Proxy/issues — or Discord above.
